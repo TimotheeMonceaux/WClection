@@ -8,9 +8,7 @@ import User from '../models/auth/user';
 export async function retrieveUser(email: string): Promise<User | undefined> {
     const row = await querySingle('SELECT * FROM "auth"."Users" WHERE "Email"=$1', [email]);
     if (row === undefined) return undefined;
-    const user = new User(row.Email, row.PasswordHash, row.Id, row.Username, row.FirstName, row.MiddleName, row.LastName);
-    console.log(user);
-    return user;
+    return new User(row.Email, row.PasswordHash, row.Id, row.FirstName, row.MiddleName, row.LastName);
 }
 
 declare var process : {

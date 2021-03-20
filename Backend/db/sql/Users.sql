@@ -21,7 +21,6 @@ CREATE TABLE auth."Users"
     "Id" bigint NOT NULL DEFAULT nextval('auth."Users_Id_seq"'::regclass),
     "Email" character varying COLLATE pg_catalog."default" NOT NULL,
     "PasswordHash" character varying COLLATE pg_catalog."default" NOT NULL,
-    "Username" character varying COLLATE pg_catalog."default",
     "FirstName" character varying COLLATE pg_catalog."default",
     "MiddleName" character varying COLLATE pg_catalog."default",
     "LastName" character varying COLLATE pg_catalog."default",
