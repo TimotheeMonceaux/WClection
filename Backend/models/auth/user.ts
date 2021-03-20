@@ -3,20 +3,20 @@ import { getInsertParameters } from "../../utils/db";
 export default class User {
     email: string;
     passwordHash: string;
-    id: number | undefined;
-    username: string | undefined;
-    firstName: string | undefined;
-    middleName: string | undefined;
-    lastName: string | undefined;
+    id: number | null | undefined;
+    username: string | null | undefined;
+    firstName: string | null | undefined;
+    middleName: string | null | undefined;
+    lastName: string | null | undefined;
 
     constructor(
         email: string,
         passwordHash: string,
-        id: number | undefined = undefined,
-        username: string | undefined = undefined,
-        firstName: string | undefined = undefined,
-        middleName: string | undefined = undefined,
-        lastName: string | undefined = undefined
+        id: number | null | undefined= undefined,
+        username: string | null | undefined = undefined,
+        firstName: string | null | undefined= undefined,
+        middleName: string | null | undefined = undefined,
+        lastName: string | null | undefined = undefined
     ) {
         this.email = email;
         this.passwordHash = passwordHash;
@@ -29,5 +29,21 @@ export default class User {
 
     getInsertParameters(): {table: string, data: Array<[string, string]>} {
         return getInsertParameters('"auth"."Users"', this);
+    }
+
+    toFrontend(): {
+        email: string,
+        username: string | null | undefined,
+        firstName: string | null | undefined,
+        middleName: string | null | undefined,
+        lastName: string | null | undefined
+    } {
+        return {
+            email: this.email,
+            username: this.username,
+            firstName: this.firstName,
+            middleName: this.middleName,
+            lastName: this.lastName
+        }
     }
 }
