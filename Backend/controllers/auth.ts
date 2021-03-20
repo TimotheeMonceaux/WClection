@@ -1,9 +1,10 @@
 import { sign } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-import { querySingle } from '../db';
+import { insert, querySingle } from '../db';
 
 import User from '../models/auth/user';
+import { hashPassword } from '../utils/db';
 
 export async function retrieveUser(email: string): Promise<User | undefined> {
     const row = await querySingle('SELECT * FROM "auth"."Users" WHERE "Email"=$1', [email]);
@@ -24,4 +25,12 @@ export async function login(user: User, password: string): Promise<{success: boo
     }
 
     return {success: true, token: sign({userId: user.email}, process.env.JWTKEY, {expiresIn: '24h'})};
+}
+
+export async function signup(email: string, password: string): Promise<{success: boolean, token: string | null}> {
+    const passwordHash = await hashPassword(password);
+    const {table, data} = new User(email, passwordHash).getInsertParameters();
+    const success = await insert(table, data);
+    if (!success) return {success: false, token: null};
+    return {success: true, token: sign({userId: email}, process.env.JWTKEY, {expiresIn: '24h'})};
 }
