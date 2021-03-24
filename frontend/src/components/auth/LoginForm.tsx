@@ -3,7 +3,14 @@ import { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 
 import Actions from '../../redux/actions';
-import { AppDispatch } from '../../redux/action-types';
+import { AppDispatch, AppStore } from '../../redux/action-types';
+import { Redirect } from 'react-router';
+
+function mapStoreToProps(store: AppStore) {
+    return {
+        userToken: store.userToken
+    }
+}
 
 function mapDispatchToProps(dispatch: AppDispatch) {
     return {
@@ -11,13 +18,16 @@ function mapDispatchToProps(dispatch: AppDispatch) {
     }
 }
 
-const connectLoginForm = connect(null, mapDispatchToProps);
+const connectLoginForm = connect(mapStoreToProps, mapDispatchToProps);
 
 function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
     const [emailValue, setEmailValue] = useState("");
     const [emailError, setEmailError] = useState(false);
     const [passwordValue, setPasswordValue] = useState("");
     const [passwordError, setPasswordError] = useState(false);
+
+    if (props.userToken !== "") return <Redirect to="/" />
+
 
     function isEmail(s:string): boolean {
         const s2 = s.split("@")[1]; console.log(s2 !== undefined && s2.indexOf(".") > 0);
