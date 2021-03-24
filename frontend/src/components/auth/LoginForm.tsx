@@ -31,7 +31,7 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
 
     function handlePasswordChange(s: string): void {
         setPasswordValue(s);
-        setEmailError(s.length < 8);
+        setPasswordError(s.length < 8);
     }
 
     return <form>
