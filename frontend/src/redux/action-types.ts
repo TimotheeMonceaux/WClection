@@ -4,7 +4,8 @@ import store from './store';
 
 const ActionTypes =  {
     LOGIN_SUCCESS: "LOGIN_SUCCESS",
-    LOGIN_ERROR: "LOGIN_ERROR"
+    LOGIN_ERROR: "LOGIN_ERROR",
+    LOGOUT: "LOGOUT"
 };
 
 export type ActionType = typeof ActionTypes;

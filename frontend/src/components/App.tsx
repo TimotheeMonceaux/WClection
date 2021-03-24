@@ -1,17 +1,17 @@
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import LoginButton from './auth/LoginButton';
 import LoginForm from './auth/LoginForm';
 import './App.css';
+import UserCard from './auth/UserCard';
 function App() {
   return (
     <Router>
-      <h1 className="App">Hello, World!</h1>
+      <UserCard />
       <Switch>
         <Route path="/login">
           <LoginForm />
         </Route>
         <Route path="/">
-          <LoginButton />
+          <h1 className="App">Hello, World!</h1>
         </Route>
       </Switch>
     </Router>

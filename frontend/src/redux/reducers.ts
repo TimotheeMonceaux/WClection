@@ -6,6 +6,9 @@ const userToken = (userToken:string = '', action: AnyAction): string => {
     if (action.type === ActionTypes.LOGIN_SUCCESS)
         return action.token;
 
+    if (action.type === ActionTypes.LOGOUT)
+        return '';
+
     return userToken;
 };
 
@@ -18,6 +21,9 @@ const userProfile = (userProfile: UserProfile = defaultUserProfile, action: AnyA
             middleName: action.user.firstName,
             lastName: action.user.lastName
         };
+
+    if (action.type === ActionTypes.LOGOUT)
+        return defaultUserProfile;
     
     return userProfile;
 }

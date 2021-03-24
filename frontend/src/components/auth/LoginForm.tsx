@@ -4,11 +4,12 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import Actions from '../../redux/actions';
 import { AppDispatch, AppStore } from '../../redux/action-types';
+import { isUserLoggedIn } from '../../redux/selectors';
 import { Redirect } from 'react-router';
 
 function mapStoreToProps(store: AppStore) {
     return {
-        userToken: store.userToken
+        isUserLoggedIn: isUserLoggedIn(store)
     }
 }
 
@@ -26,7 +27,7 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
     const [passwordValue, setPasswordValue] = useState("");
     const [passwordError, setPasswordError] = useState(false);
 
-    if (props.userToken !== "") return <Redirect to="/" />
+    if (props.isUserLoggedIn) return <Redirect to="/" />
 
 
     function isEmail(s:string): boolean {

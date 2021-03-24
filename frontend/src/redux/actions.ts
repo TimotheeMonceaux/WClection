@@ -1,3 +1,4 @@
+import { AnyAction } from 'redux';
 import ActionTypes, { AppAction } from './action-types';
 
 const serverUrl = "http://localhost:8000";
@@ -18,10 +19,13 @@ const userLogin = (email: string, password: string): AppAction =>
     ((dispatch) => post("/api/auth/login", {email, password})
                     .then(response => response.json())
                     .then(json => {console.log(json);dispatch({type:ActionTypes.LOGIN_SUCCESS, ...json})})
-                    .catch(error => console.log(error)))
+                    .catch(error => console.log(error)));
+
+const userLogout = (): AnyAction => ({type: ActionTypes.LOGOUT});
 
 const actions = {
-    userLogin: userLogin
+    userLogin: userLogin,
+    userLogout: userLogout
 }
 
 export default actions;
