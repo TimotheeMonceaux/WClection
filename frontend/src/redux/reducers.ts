@@ -1,3 +1,5 @@
 import { combineReducers } from 'redux';
 
-export default combineReducers({});
+const dummy = (dummy:string = ''): string => dummy;
+
+export default combineReducers({dummy});

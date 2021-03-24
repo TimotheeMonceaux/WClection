@@ -1,13 +1,37 @@
 import { TextField, Typography, Button } from '@material-ui/core';
 import { useState } from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 
-export default function LoginForm() {
+import Actions from '../../redux/actions';
+import { AppDispatch } from '../../redux/action-types';
+
+function mapDispatchToProps(dispatch: AppDispatch) {
+    return {
+        login: (email: string, password: string) => {dispatch(Actions.userLogin(email, password))}
+    }
+}
+
+const connectLoginForm = connect(null, mapDispatchToProps);
+
+function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
+    const [emailValue, setEmailValue] = useState("");
     const [emailError, setEmailError] = useState(false);
+    const [passwordValue, setPasswordValue] = useState("");
     const [passwordError, setPasswordError] = useState(false);
 
     function isEmail(s:string): boolean {
         const s2 = s.split("@")[1]; console.log(s2 !== undefined && s2.indexOf(".") > 0);
         return s2 !== undefined && s2.indexOf(".") > 0;
+    }
+
+    function handleEmailChange(s: string): void {
+        setEmailValue(s);
+        setEmailError(!isEmail(s));
+    }
+
+    function handlePasswordChange(s: string): void {
+        setPasswordValue(s);
+        setEmailError(s.length < 8);
     }
 
     return <form>
@@ -19,7 +43,7 @@ export default function LoginForm() {
         variant="outlined" 
         className="form-input" 
         error={emailError}
-        onChange={(e) => setEmailError(!isEmail(e.target.value))}
+        onChange={(e) => handleEmailChange(e.target.value)}
         />
     {emailError && <Typography variant="body1" style={{color: "red"}}>Veuillez saisir une adresse email valide</Typography>}
     <br />
@@ -29,9 +53,16 @@ export default function LoginForm() {
         className="form-input"
         type="password"
         error={passwordError}
-        onChange={(e) => setPasswordError(e.target.value.length < 8)} />
+        onChange={(e) => handlePasswordChange(e.target.value)} />
     {passwordError && <Typography variant="body1" style={{color: "red"}}>Votre mot de passe doit faire au moins 8 caractères</Typography>}
     <br />
-    <Button variant="contained" color="primary" className="form-input">Login</Button>
+    <Button 
+        variant="contained" 
+        color="primary" 
+        className="form-input"
+        disabled={emailValue + passwordValue === "" || emailError || passwordError}
+        onClick={() => props.login(emailValue, passwordValue)}>Login</Button>
   </form>;
 }
+
+export default connectLoginForm(LoginForm);
