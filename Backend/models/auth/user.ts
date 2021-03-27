@@ -1,4 +1,5 @@
 import { getInsertParameters } from "../../utils/db";
+import { filterNullValues } from "../../utils/object";
 
 export default class User {
     email: string;
@@ -34,11 +35,11 @@ export default class User {
         middleName: string | null | undefined,
         lastName: string | null | undefined
     } {
-        return {
+        return filterNullValues({
             email: this.email,
-            firstName: (this.firstName === null ? undefined : this.firstName),
-            middleName: (this.middleName === null ? undefined : this.middleName),
-            lastName: (this.lastName === null ? undefined : this.lastName)
-        }
+            firstName: this.firstName,
+            middleName: this.middleName,
+            lastName: this.lastName
+        });
     }
 }
