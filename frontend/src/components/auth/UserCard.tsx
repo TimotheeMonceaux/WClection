@@ -29,13 +29,8 @@ const connectUserCard = connect(mapStoreToProps, mapDispatchToProps);
 function UserCard(props: ConnectedProps<typeof connectUserCard>) {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-      };
-    
-      const handleClose = () => {
-           setAnchorEl(null);
-      };
+    const handleMenu = (event: React.MouseEvent<HTMLElement>) => {setAnchorEl(event.currentTarget);};
+    const handleClose = () => {setAnchorEl(null);};
 
     if (props.isUserLoggedIn)
         return <Fragment>
@@ -48,13 +43,13 @@ function UserCard(props: ConnectedProps<typeof connectUserCard>) {
                 open={Boolean(anchorEl)}
                 getContentAnchorEl={null}
                 anchorOrigin={{vertical: "bottom", horizontal: "center"}}
-                transformOrigin={{vertical: "top",horizontal: "center"}}
+                transformOrigin={{vertical: "top", horizontal: "center"}}
                 onClose={handleClose}>
                 <MenuItem onClick={props.logout}><PowerSettingsNew style={{marginRight: 10}} /> Déconnexion</MenuItem>
             </Menu>
         </Fragment>;
     
-    return <div><LoginButton /><SignupButton /></div>;
+    return <Fragment><LoginButton /><SignupButton /></Fragment>;
 }
 
 export default connectUserCard(UserCard);
