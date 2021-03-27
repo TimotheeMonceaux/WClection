@@ -36,9 +36,9 @@ export default class User {
     } {
         return {
             email: this.email,
-            firstName: this.firstName,
-            middleName: this.middleName,
-            lastName: this.lastName
+            firstName: (this.firstName === null ? undefined : this.firstName),
+            middleName: (this.middleName === null ? undefined : this.middleName),
+            lastName: (this.lastName === null ? undefined : this.lastName)
         }
     }
 }
