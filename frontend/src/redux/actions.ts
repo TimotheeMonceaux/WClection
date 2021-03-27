@@ -18,13 +18,18 @@ function post(endpoint: string, body: object): Promise<Response> {
 const userLogin = (email: string, password: string): AppAction => 
     ((dispatch) => post("/api/auth/login", {email, password})
                     .then(response => response.json())
-                    .then(json => {console.log(json);dispatch({type:ActionTypes.LOGIN_SUCCESS, ...json})})
+                    .then(json => {
+                        if (json.success) dispatch({type:ActionTypes.LOGIN_SUCCESS, ...json});
+                        else dispatch({type: ActionTypes.LOGIN_ERROR, msg: json.msg});
+                    })
                     .catch(error => console.log(error)));
 
+const removeAuthErrorMsg = (): AnyAction => ({type: ActionTypes.REMOVE_AUTH_ERROR_MSG});
 const userLogout = (): AnyAction => ({type: ActionTypes.LOGOUT});
 
 const actions = {
     userLogin: userLogin,
+    removeAuthErrorMsg: removeAuthErrorMsg,
     userLogout: userLogout
 }
 

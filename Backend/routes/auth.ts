@@ -17,13 +17,13 @@ authRouter.post('/login',
         retrieveUser(req.body.email)
             .then(usr => {
                 if (usr === undefined) {
-                    return res.status(401).json({success: false, msg: "Unknown User"});
+                    return res.status(401).json({success: false, msg: "Email inconnu"});
                 }
 
                 login(usr!, req.body.password)
                     .then(st => {
                         if (!st.success) {
-                            return res.status(401).json({success: false, msg: "Incorrect Password"});
+                            return res.status(401).json({success: false, msg: "Mot de passe incorrect"});
                         }
                         return res.status(200).json({success: true, token: st.token, user: usr!.toFrontend()});
                     })
@@ -42,7 +42,7 @@ authRouter.post('/signup',
         retrieveUser(req.body.email)
             .then(usr => {
                 if (usr !== undefined) {
-                    return res.status(401).json({success: false, msg: "This account already exists"});
+                    return res.status(401).json({success: false, msg: "Cet email est déjà utilisé"});
                 }
                 
                 signup(req.body.email, req.body.password)

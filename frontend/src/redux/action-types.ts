@@ -5,6 +5,7 @@ import store from './store';
 const ActionTypes =  {
     LOGIN_SUCCESS: "LOGIN_SUCCESS",
     LOGIN_ERROR: "LOGIN_ERROR",
+    REMOVE_AUTH_ERROR_MSG: "REMOVE_AUTH_ERROR_MSG",
     LOGOUT: "LOGOUT"
 };
 

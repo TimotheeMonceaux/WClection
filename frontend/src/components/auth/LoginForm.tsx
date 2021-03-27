@@ -1,21 +1,24 @@
-import { TextField, Typography, Button } from '@material-ui/core';
 import { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { Redirect } from 'react-router';
+import { TextField, Typography, Button } from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import Actions from '../../redux/actions';
 import { AppDispatch, AppStore } from '../../redux/action-types';
 import { isUserLoggedIn } from '../../redux/selectors';
-import { Redirect } from 'react-router';
 
 function mapStoreToProps(store: AppStore) {
     return {
+        authErrorMsg: store.authErrorMsg,
         isUserLoggedIn: isUserLoggedIn(store)
     }
 }
 
 function mapDispatchToProps(dispatch: AppDispatch) {
     return {
-        login: (email: string, password: string) => {dispatch(Actions.userLogin(email, password))}
+        login: (email: string, password: string) => {dispatch(Actions.userLogin(email, password))},
+        removeAuthErrorMsg: () => {dispatch(Actions.removeAuthErrorMsg())}
     }
 }
 
@@ -31,7 +34,7 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
 
 
     function isEmail(s:string): boolean {
-        const s2 = s.split("@")[1]; console.log(s2 !== undefined && s2.indexOf(".") > 0);
+        const s2 = s.split("@")[1];
         return s2 !== undefined && s2.indexOf(".") > 0;
     }
 
@@ -73,6 +76,14 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
         className="form-input"
         disabled={emailValue + passwordValue === "" || emailError || passwordError}
         onClick={() => props.login(emailValue, passwordValue)}>Login</Button>
+
+    {props.authErrorMsg && 
+        <MuiAlert 
+            elevation={6} 
+            variant="filled" 
+            severity="error"
+            onClick={() => props.removeAuthErrorMsg()}
+            >{props.authErrorMsg}</MuiAlert>}
   </form>;
 }
 

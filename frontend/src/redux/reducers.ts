@@ -2,6 +2,16 @@ import { combineReducers, AnyAction } from 'redux';
 import ActionTypes from './action-types';
 import { UserProfile } from './store-types';
 
+const authErrorMsg = (authErrorMsg = '', action: AnyAction): string => {
+    if (action.type === ActionTypes.LOGIN_ERROR)
+        return action.msg;
+
+    if (action.type === ActionTypes.LOGIN_SUCCESS || action.type === ActionTypes.REMOVE_AUTH_ERROR_MSG)
+        return '';
+
+    return authErrorMsg;
+}
+
 const userToken = (userToken:string = '', action: AnyAction): string => {
     if (action.type === ActionTypes.LOGIN_SUCCESS)
         return action.token;
@@ -31,6 +41,7 @@ const userProfile = (userProfile: UserProfile = defaultUserProfile, action: AnyA
 
 
 export default combineReducers({
+    authErrorMsg,
     userToken,
     userProfile
 });
