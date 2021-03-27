@@ -3,8 +3,10 @@ import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import store from './store';
 
 const ActionTypes =  {
+    SET_GLOBAL_APP_ERROR: "SET_GLOBAL_APP_ERROR",
     LOGIN_SUCCESS: "LOGIN_SUCCESS",
-    LOGIN_ERROR: "LOGIN_ERROR",
+    SIGNUP_SUCCESS: "SIGNUP_SUCCESS",
+    AUTH_ERROR: "AUTH_ERROR",
     REMOVE_AUTH_ERROR_MSG: "REMOVE_AUTH_ERROR_MSG",
     LOGOUT: "LOGOUT"
 };

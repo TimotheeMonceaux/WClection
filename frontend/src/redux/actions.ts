@@ -15,20 +15,33 @@ function post(endpoint: string, body: object): Promise<Response> {
         });
 }
 
+const setGlobalAppError = (error: string): AnyAction => ({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: error});
+
 const userLogin = (email: string, password: string): AppAction => 
     ((dispatch) => post("/api/auth/login", {email, password})
                     .then(response => response.json())
                     .then(json => {
                         if (json.success) dispatch({type:ActionTypes.LOGIN_SUCCESS, ...json});
-                        else dispatch({type: ActionTypes.LOGIN_ERROR, msg: json.msg});
+                        else dispatch({type: ActionTypes.AUTH_ERROR, msg: json.msg});
                     })
-                    .catch(error => console.log(error)));
+                    .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
+
+const userSignup = (email: string, password: string): AppAction => 
+    ((dispatch) => post("/api/auth/signup", {email, password})
+                    .then(response => response.json())
+                    .then(json => {
+                        if (json.success) dispatch({type:ActionTypes.SIGNUP_SUCCESS, ...json});
+                        else dispatch({type: ActionTypes.AUTH_ERROR, msg: json.msg});
+                    })
+                    .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
 
 const removeAuthErrorMsg = (): AnyAction => ({type: ActionTypes.REMOVE_AUTH_ERROR_MSG});
 const userLogout = (): AnyAction => ({type: ActionTypes.LOGOUT});
 
 const actions = {
+    setGlobalAppError: setGlobalAppError,
     userLogin: userLogin,
+    userSignup: userSignup,
     removeAuthErrorMsg: removeAuthErrorMsg,
     userLogout: userLogout
 }
