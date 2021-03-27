@@ -1,4 +1,5 @@
 import { Pool } from 'pg';
+import Log from '../models/common/log';
 
 const pool = new Pool();
 pool.connect();
@@ -31,4 +32,10 @@ export async function insert(table: string, data: Array<[string, string]>): Prom
     const duration = Date.now() - start;
     console.log('[INFO] Query: ', {text: `INSERT INTO ${table}`, duration, rows: result.rowCount});
     return result.rowCount === 1;
+}
+
+export async function log(type: string, user: string | undefined = undefined, result: string | undefined = undefined, extraParameters: any = undefined): Promise<boolean> {
+    const log = new Log(type, user, result, JSON.stringify(extraParameters));
+    const {table, data} = log.getInsertParameters();
+    return insert(table, data);
 }
