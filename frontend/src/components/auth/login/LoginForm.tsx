@@ -1,12 +1,22 @@
 import { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Redirect } from 'react-router';
-import { TextField, Typography, Button, Container } from '@material-ui/core';
+import { TextField, Typography, Button } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
+import styled from 'styled-components';
 
-import Actions from '../../redux/actions';
-import { AppDispatch, AppStore } from '../../redux/action-types';
-import { isUserLoggedIn } from '../../redux/selectors';
+import Actions from '../../../redux/actions';
+import { AppDispatch, AppStore } from '../../../redux/action-types';
+import { isUserLoggedIn } from '../../../redux/selectors';
+
+const STextField = styled(TextField)`
+    @media (orientation: landscape) {
+        min-width: 30vw;
+    }
+    @media (orientation: portrait) {
+        min-width: 60vw;
+    }
+`;
 
 function mapStoreToProps(store: AppStore) {
     return {
@@ -48,25 +58,24 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
         setPasswordError(s.length < 8);
     }
 
-    return <Container><form>
-    <Typography variant="h5" style={{ marginBottom: 8 }}>
-      Login
-    </Typography>
-    <TextField 
+    return <form>
+    <STextField 
         label="Email" 
         variant="outlined" 
         className="form-input" 
         error={emailError}
+        margin="normal"
         onChange={(e) => handleEmailChange(e.target.value)}
         />
     {emailError && <Typography variant="body1" style={{color: "red"}}>Veuillez saisir une adresse email valide</Typography>}
     <br />
-    <TextField 
+    <STextField 
         label="Mot de passe"
         variant="outlined"
         className="form-input"
         type="password"
         error={passwordError}
+        margin="normal"
         onChange={(e) => handlePasswordChange(e.target.value)} />
     {passwordError && <Typography variant="body1" style={{color: "red"}}>Votre mot de passe doit faire au moins 8 caractères</Typography>}
     <br />
@@ -74,17 +83,19 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
         variant="contained" 
         color="primary" 
         className="form-input"
+        style={{marginTop: 25}}
         disabled={emailValue + passwordValue === "" || emailError || passwordError}
-        onClick={() => props.login(emailValue, passwordValue)}>Login</Button>
+        onClick={() => props.login(emailValue, passwordValue)}>Connexion</Button>
 
     {props.authErrorMsg && 
         <MuiAlert 
             elevation={6} 
             variant="filled" 
             severity="error"
+            style={{marginTop: 25}}
             onClick={() => props.removeAuthErrorMsg()}
             >{props.authErrorMsg}</MuiAlert>}
-  </form></Container>;
+  </form>;
 }
 
 export default connectLoginForm(LoginForm);
