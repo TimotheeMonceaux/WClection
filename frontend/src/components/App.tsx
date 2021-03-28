@@ -34,7 +34,7 @@ function App(props: ConnectedProps<typeof connectApp>) {
           <SignupPage />
         </Route>
         <Route path="/">
-          <Container fixed>
+          <Container fixed style={{marginTop: 75}}>
             <AppCarousel />
             <Collection />
           </Container>
