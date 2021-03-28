@@ -4,12 +4,11 @@ import Log from '../models/common/log';
 const pool = new Pool();
 pool.connect();
 
-export async function query<T>(text: string, values: Array<string>): Promise<Array<T>> {
+export async function query(text: string, values: Array<string> = []): Promise<Array<any>> {
     const start = Date.now();
     const result = await pool.query(text, values);
     const duration = Date.now() - start;
     console.log('[INFO] Query: ', {text, duration, rows: result.rowCount});
-    pool.end();
     return result.rows;
 }
 
