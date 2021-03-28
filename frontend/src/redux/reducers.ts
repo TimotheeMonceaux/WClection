@@ -1,6 +1,6 @@
 import { combineReducers, AnyAction } from 'redux';
 import ActionTypes from './action-types';
-import { UserProfile } from './store-types';
+import { UserProfile, CarouselSlide } from './store-types';
 
 const globalAppError = (globalAppError = '', action: AnyAction): string => {
     if (action.type === ActionTypes.SET_GLOBAL_APP_ERROR)
@@ -29,7 +29,7 @@ const userToken = (userToken:string = '', action: AnyAction): string => {
     return userToken;
 };
 
-const defaultUserProfile = {email: '', firstName: '',middleName: '',lastName: ''};
+const defaultUserProfile = {email: '', firstName: '', middleName: '', lastName: ''};
 const userProfile = (userProfile: UserProfile = defaultUserProfile, action: AnyAction): UserProfile => {
     if (action.type === ActionTypes.LOGIN_SUCCESS || action.type === ActionTypes.SIGNUP_SUCCESS )
         return {
@@ -45,11 +45,17 @@ const userProfile = (userProfile: UserProfile = defaultUserProfile, action: AnyA
     return userProfile;
 }
 
+const carouselSlides = (carouselSlides: Array<CarouselSlide> = [], action: AnyAction): Array<CarouselSlide> => {
+    if (action.type === ActionTypes.SET_CAROUSEL_SLIDES)
+        return action.slides;
 
+    return carouselSlides;
+}
 
 export default combineReducers({
     globalAppError,
     authErrorMsg,
     userToken,
-    userProfile
+    userProfile,
+    carouselSlides
 });

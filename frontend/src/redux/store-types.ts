@@ -4,3 +4,9 @@ export type UserProfile = {
     middleName: string,
     lastName: string
 }
+
+export type CarouselSlide = {
+    image: string,
+    name: string,
+    description: string
+}

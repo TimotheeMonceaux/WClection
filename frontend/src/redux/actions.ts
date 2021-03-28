@@ -3,6 +3,10 @@ import ActionTypes, { AppAction } from './action-types';
 
 const serverUrl = "http://localhost:8000";
 
+function get(endpoint: string): Promise<Response> {
+    return fetch(serverUrl + endpoint);
+}
+
 function post(endpoint: string, body: object): Promise<Response> {
     return fetch(serverUrl + endpoint, 
         {
@@ -21,7 +25,7 @@ const userLogin = (email: string, password: string): AppAction =>
     ((dispatch) => post("/api/auth/login", {email, password})
                     .then(response => response.json())
                     .then(json => {
-                        if (json.success) dispatch({type:ActionTypes.LOGIN_SUCCESS, ...json});
+                        if (json.success) dispatch({type: ActionTypes.LOGIN_SUCCESS, ...json});
                         else dispatch({type: ActionTypes.AUTH_ERROR, msg: json.msg});
                     })
                     .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
@@ -30,7 +34,7 @@ const userSignup = (email: string, password: string): AppAction =>
     ((dispatch) => post("/api/auth/signup", {email, password})
                     .then(response => response.json())
                     .then(json => {
-                        if (json.success) dispatch({type:ActionTypes.SIGNUP_SUCCESS, ...json});
+                        if (json.success) dispatch({type: ActionTypes.SIGNUP_SUCCESS, ...json});
                         else dispatch({type: ActionTypes.AUTH_ERROR, msg: json.msg});
                     })
                     .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
@@ -38,12 +42,22 @@ const userSignup = (email: string, password: string): AppAction =>
 const removeAuthErrorMsg = (): AnyAction => ({type: ActionTypes.REMOVE_AUTH_ERROR_MSG});
 const userLogout = (): AnyAction => ({type: ActionTypes.LOGOUT});
 
+const loadCarouselSlides = (): AppAction =>
+    ((dispatch) => get("/api/carousel")
+                    .then(response => response.json())
+                    .then(json => {
+                        if (json.success) dispatch({type: ActionTypes.SET_CAROUSEL_SLIDES, ...json});
+                        else dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: json.msg});
+                    })
+                    .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
+
 const actions = {
-    setGlobalAppError: setGlobalAppError,
-    userLogin: userLogin,
-    userSignup: userSignup,
-    removeAuthErrorMsg: removeAuthErrorMsg,
-    userLogout: userLogout
+    setGlobalAppError,
+    userLogin,
+    userSignup,
+    removeAuthErrorMsg,
+    userLogout,
+    loadCarouselSlides
 }
 
 export default actions;
