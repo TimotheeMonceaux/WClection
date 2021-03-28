@@ -1,10 +1,13 @@
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { connect, ConnectedProps } from 'react-redux';
 
-import HeaderBar from './headerbar/headerbar';
+import HeaderBar from './headerbar/Headerbar';
 import LoginPage from './auth/login/LoginPage';
 import SignupPage from './auth/signup/SignupPage';
 import { AppStore } from '../redux/action-types';
+import AppCarousel from './carousel/Carousel';
+import { Container } from '@material-ui/core';
+import Collection from './products/Collection';
 
 function mapStoreToProps(store: AppStore) {
   return {
@@ -31,7 +34,10 @@ function App(props: ConnectedProps<typeof connectApp>) {
           <SignupPage />
         </Route>
         <Route path="/">
-          <h1 className="App">Hello, World!</h1>
+          <Container fixed>
+            <AppCarousel />
+            <Collection />
+          </Container>
         </Route>
       </Switch>
     </Router>
