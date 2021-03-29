@@ -1,6 +1,6 @@
 import { combineReducers, AnyAction } from 'redux';
 import ActionTypes from './action-types';
-import { UserProfile, CarouselSlide } from './store-types';
+import { UserProfile, CarouselSlide, Collection } from './store-types';
 
 const globalAppError = (globalAppError = '', action: AnyAction): string => {
     if (action.type === ActionTypes.SET_GLOBAL_APP_ERROR)
@@ -52,10 +52,18 @@ const carouselSlides = (carouselSlides: Array<CarouselSlide> = [], action: AnyAc
     return carouselSlides;
 }
 
+const collections = (collections: Array<Collection> = [], action: AnyAction): Array<Collection> => {
+    if (action.type === ActionTypes.SET_COLLECTIONS)
+        return action.collections;
+
+    return collections;
+}
+
 export default combineReducers({
     globalAppError,
     authErrorMsg,
     userToken,
     userProfile,
-    carouselSlides
+    carouselSlides,
+    collections
 });

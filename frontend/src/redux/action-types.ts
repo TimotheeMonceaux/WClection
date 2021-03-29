@@ -13,7 +13,8 @@ const ActionTypes =  {
     LOGOUT: "LOGOUT",
 
     // Products
-    SET_CAROUSEL_SLIDES: "SET_CAROUSEL_SLIDES"
+    SET_CAROUSEL_SLIDES: "SET_CAROUSEL_SLIDES",
+    SET_COLLECTIONS: "SET_COLLECTIONS"
 };
 
 export type ActionType = typeof ActionTypes;

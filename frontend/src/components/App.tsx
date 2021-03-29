@@ -7,7 +7,7 @@ import SignupPage from './auth/signup/SignupPage';
 import { AppStore } from '../redux/action-types';
 import AppCarousel from './carousel/Carousel';
 import { Container } from '@material-ui/core';
-import Collection from './products/Collection';
+import Collections from './products/Collections';
 
 function mapStoreToProps(store: AppStore) {
   return {
@@ -36,7 +36,7 @@ function App(props: ConnectedProps<typeof connectApp>) {
         <Route path="/">
           <Container fixed style={{marginTop: 75}}>
             <AppCarousel />
-            <Collection />
+            <Collections />
           </Container>
         </Route>
       </Switch>

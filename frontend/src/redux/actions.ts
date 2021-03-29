@@ -51,13 +51,23 @@ const loadCarouselSlides = (): AppAction =>
                     })
                     .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
 
+const loadCollections = (): AppAction =>
+    ((dispatch) => get("/api/collection")
+                    .then(response => response.json())
+                    .then(json => {
+                        if (json.success) dispatch({type: ActionTypes.SET_COLLECTIONS, ...json});
+                        else dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: json.msg});
+                    })
+                    .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));      
+
 const actions = {
     setGlobalAppError,
     userLogin,
     userSignup,
     removeAuthErrorMsg,
     userLogout,
-    loadCarouselSlides
+    loadCarouselSlides,
+    loadCollections
 }
 
 export default actions;
