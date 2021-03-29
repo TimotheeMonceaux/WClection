@@ -8,6 +8,7 @@ import { AppStore } from '../redux/action-types';
 import AppCarousel from './carousel/Carousel';
 import { Container } from '@material-ui/core';
 import Collections from './products/Collections';
+import Footer from './footer/Footer';
 
 function mapStoreToProps(store: AppStore) {
   return {
@@ -38,6 +39,7 @@ function App(props: ConnectedProps<typeof connectApp>) {
             <AppCarousel />
             <Collections />
           </Container>
+          <Footer />
         </Route>
       </Switch>
     </Router>
