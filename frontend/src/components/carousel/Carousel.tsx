@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import Carousel from 'react-material-ui-carousel';
 import { Paper, Button } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 import styled from 'styled-components';
 
 import { AppStore, AppDispatch } from '../../redux/action-types';
@@ -44,7 +45,7 @@ function AppCarousel(props: ConnectedProps<typeof connectAppCarousel>) {
     const load = props.loadCarouselSlides;
     useEffect(() => {load()}, [load]);
 
-    if (!props.areCarouselSlidesLoaded) return <h1>LOADING</h1>;
+    if (!props.areCarouselSlidesLoaded) return <Skeleton variant="rect" height="33vh" />;;
     
     return <Carousel navButtonsAlwaysVisible animation="slide">
         {props.carouselSlides.map((item, i)  => <Item key={i} name={item.name} description={item.description} picture={item.image} />)}
