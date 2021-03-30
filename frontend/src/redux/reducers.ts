@@ -77,9 +77,6 @@ const cart = (cart: {[productId: number]: number} = [], action: AnyAction): {[pr
     if (action.type === ActionTypes.REMOVE_FROM_CART)
         return _.omit(cart, action.productId);
 
-    if (action.type === ActionTypes.EMPTY_CART)
-        return {};
-
     return cart;
 }
 

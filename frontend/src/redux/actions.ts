@@ -62,7 +62,6 @@ const loadCollections = (): AppAction =>
 
 const addToCart = (productId: number, quantity: number): AnyAction => ({type: ActionTypes.ADD_TO_CART, productId, quantity});
 const removeFromCart = (productId: number): AnyAction => ({type: ActionTypes.REMOVE_FROM_CART, productId});
-const emptyCart = (): AnyAction => ({type: ActionTypes.EMPTY_CART});
 
 const actions = {
     setGlobalAppError,
@@ -73,8 +72,7 @@ const actions = {
     loadCarouselSlides,
     loadCollections,
     addToCart,
-    removeFromCart,
-    emptyCart
-}
+    removeFromCart
+};
 
 export default actions;

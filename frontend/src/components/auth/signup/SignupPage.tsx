@@ -8,7 +8,7 @@ import SignupForm from "./SignupForm";
 const useStyles = makeStyles(() => ({
     root: {
       flexGrow: 1,
-      marginTop: 50,
+      marginTop: 200,
     },
     paper: {
       padding: 25

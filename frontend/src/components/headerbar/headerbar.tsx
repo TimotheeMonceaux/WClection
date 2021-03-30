@@ -6,12 +6,12 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { IconButton, Menu, MenuItem } from "@material-ui/core";
+import { Badge } from '@material-ui/core';
+import { ShoppingCart } from '@material-ui/icons';
 
 import { AppStore } from '../../redux/action-types';
 import { getCartSize, getCartItems } from '../../redux/selectors';
 import UserCard from '../auth/UserCard';
-import { Badge } from '@material-ui/core';
-import { ShoppingCart } from '@material-ui/icons';
 import CartMenuItem from './CartMenuItem';
 
 
