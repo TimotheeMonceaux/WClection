@@ -39,7 +39,7 @@ function Collections(props: ConnectedProps<typeof connectCollections>) {
     if (!props.areCollectionsLoaded) return collectionSkeleton;
 
     return <Fragment>
-        {props.collections.map((c, i) => <Collection key={i} name={c.name} products={c.products}/>)}
+        {props.collections.map((c, i) => <Collection key={i} name={c.name} productIds={c.products}/>)}
     </Fragment>
 }
 

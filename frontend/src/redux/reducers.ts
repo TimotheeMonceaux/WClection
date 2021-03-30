@@ -1,6 +1,8 @@
 import { combineReducers, AnyAction } from 'redux';
+import _ from 'lodash';
+
 import ActionTypes from './action-types';
-import { UserProfile, CarouselSlide, Collection } from './store-types';
+import { UserProfile, CarouselSlide, Product, Collection } from './store-types';
 
 const globalAppError = (globalAppError = '', action: AnyAction): string => {
     if (action.type === ActionTypes.SET_GLOBAL_APP_ERROR)
@@ -52,11 +54,33 @@ const carouselSlides = (carouselSlides: Array<CarouselSlide> = [], action: AnyAc
     return carouselSlides;
 }
 
+const products = (products: {[id: number]: Product} = {}, action: AnyAction): {[id: number]: Product} => {
+    if (action.type === ActionTypes.SET_COLLECTIONS)
+        return action.collections.reduce((acc: Product[], c: {products: Product[]}) => acc.concat(c.products), [])
+                                 .reduce((acc: {[id: number]: Product}, p: Product) => ({...acc, [p.id]: p}), {});
+    
+    return  products;
+}
+
 const collections = (collections: Array<Collection> = [], action: AnyAction): Array<Collection> => {
     if (action.type === ActionTypes.SET_COLLECTIONS)
-        return action.collections;
+        return action.collections.map((c: any) => ({name: c.name, products: c.products.map((p: Product) => p.id)}));
 
     return collections;
+}
+
+const cart = (cart: {[productId: number]: number} = [], action: AnyAction): {[productId: number]: number} => {
+    if (action.type === ActionTypes.ADD_TO_CART) 
+        return {...cart, [action.productId]: (cart[action.productId] ?? 0) + action.quantity};
+    
+
+    if (action.type === ActionTypes.REMOVE_FROM_CART)
+        return _.omit(cart, action.productId);
+
+    if (action.type === ActionTypes.EMPTY_CART)
+        return {};
+
+    return cart;
 }
 
 export default combineReducers({
@@ -65,5 +89,7 @@ export default combineReducers({
     userToken,
     userProfile,
     carouselSlides,
-    collections
+    collections,
+    products,
+    cart
 });

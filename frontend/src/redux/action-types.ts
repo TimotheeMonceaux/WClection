@@ -14,7 +14,12 @@ const ActionTypes =  {
 
     // Products
     SET_CAROUSEL_SLIDES: "SET_CAROUSEL_SLIDES",
-    SET_COLLECTIONS: "SET_COLLECTIONS"
+    SET_COLLECTIONS: "SET_COLLECTIONS",
+
+    // Cart
+    ADD_TO_CART: "ADD_TO_CART",
+    REMOVE_FROM_CART: "REMOVE_FROM_CART",
+    EMPTY_CART: "EMPTY_CART"
 };
 
 export type ActionType = typeof ActionTypes;

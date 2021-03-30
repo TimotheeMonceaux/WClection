@@ -1,14 +1,19 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { connect, ConnectedProps } from 'react-redux';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import { IconButton, Menu, MenuItem } from "@material-ui/core";
 
+import { AppStore } from '../../redux/action-types';
+import { getCartSize, getCartItems } from '../../redux/selectors';
 import UserCard from '../auth/UserCard';
 import { Badge } from '@material-ui/core';
 import { ShoppingCart } from '@material-ui/icons';
+import CartMenuItem from './CartMenuItem';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,7 +28,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ButtonAppBar() {
+function mapStoreToProps(store: AppStore) {
+  return {
+    cartSize: getCartSize(store),
+    cartItems: getCartItems(store),
+    cart: store.cart
+  }
+}
+
+const connectHeaderBar = connect(mapStoreToProps);
+
+function HeaderBar(props: ConnectedProps<typeof connectHeaderBar>) {
   const classes = useStyles();
   const history = useHistory();
 
@@ -40,7 +55,7 @@ export default function ButtonAppBar() {
             WClection
           </Typography>
           <IconButton color="inherit" onClick={handleMenu} style={{fontSize: "120%"}}>
-            <Badge badgeContent={0} color="secondary" style={{marginRight: 25}}>
+            <Badge badgeContent={props.cartSize} color="secondary" style={{marginRight: 25}}>
                 <ShoppingCart />
             </Badge>
           </IconButton>
@@ -52,7 +67,11 @@ export default function ButtonAppBar() {
             anchorOrigin={{vertical: "bottom", horizontal: "center"}}
             transformOrigin={{vertical: "top", horizontal: "center"}}
             onClose={handleClose}>
-            <MenuItem><i>Votre panier est vide</i></MenuItem>
+              <div> {/* This div serves as Menu popover anchor. The anchor cannot be a connected component such as CartMenuItem due to ref forwarding issues. Read more : https://stackoverflow.com/questions/56307332/how-to-use-custom-functional-components-within-material-ui-menu */}
+                {props.cartSize === 0 ? 
+                  <MenuItem><i>Votre panier est vide</i></MenuItem> : 
+                  props.cartItems.map(productId => <CartMenuItem productId={productId} quantity={props.cart[productId]} key={productId} />)}
+              </div>
           </Menu>
           <UserCard />
         </Toolbar>
@@ -60,3 +79,5 @@ export default function ButtonAppBar() {
     </div>
   );
 }
+
+export default connectHeaderBar(HeaderBar);

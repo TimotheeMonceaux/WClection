@@ -58,7 +58,11 @@ const loadCollections = (): AppAction =>
                         if (json.success) dispatch({type: ActionTypes.SET_COLLECTIONS, ...json});
                         else dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: json.msg});
                     })
-                    .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));      
+                    .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
+
+const addToCart = (productId: number, quantity: number): AnyAction => ({type: ActionTypes.ADD_TO_CART, productId, quantity});
+const removeFromCart = (productId: number): AnyAction => ({type: ActionTypes.REMOVE_FROM_CART, productId});
+const emptyCart = (): AnyAction => ({type: ActionTypes.EMPTY_CART});
 
 const actions = {
     setGlobalAppError,
@@ -67,7 +71,10 @@ const actions = {
     removeAuthErrorMsg,
     userLogout,
     loadCarouselSlides,
-    loadCollections
+    loadCollections,
+    addToCart,
+    removeFromCart,
+    emptyCart
 }
 
 export default actions;

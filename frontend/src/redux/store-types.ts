@@ -20,5 +20,5 @@ export type Product = {
 
 export type Collection = {
     name: string,
-    products: Array<Product>
+    products: Array<number>
 }
