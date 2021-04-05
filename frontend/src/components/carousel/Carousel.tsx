@@ -1,25 +1,31 @@
 import { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import Carousel from 'react-material-ui-carousel';
-import { Paper, Button } from '@material-ui/core';
-import { Skeleton } from '@material-ui/lab';
-import styled from 'styled-components';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import { makeStyles } from '@material-ui/core/styles';
+import Skeleton from '@material-ui/lab/Skeleton';
 
 import { AppStore, AppDispatch } from '../../redux/action-types';
 import { areCarouselSlidesLoaded } from '../../redux/selectors';
 import Actions from '../../redux/actions';
 
-const SPaper = styled(Paper)`
-    padding-left: 100px;
-    min-height: 33vh;
-    color: white;
-`;
+const useStyles = makeStyles((theme) => ({
+    paper: {
+        paddingLeft: 100,
+        paddingTop: 50,
+        minHeight: '33vh',
+        color: theme.palette.common.white
+    }
+}));
 
 function Item(props: {name: string, description: string, picture: string}) {
-    return <SPaper square style={{backgroundImage: `url(${props.picture})`}}>
-        <h2>{props.name}</h2>
-        <p>{props.description}</p>
-    </SPaper>;
+    const classes = useStyles();
+
+    return <Paper square className={classes.paper} style={{backgroundImage: `url(${props.picture})`}}>
+        <Typography variant="h4">{props.name}</Typography>
+        <Typography variant="body1">{props.description}</Typography>
+    </Paper>;
 }
 
 function mapStoreToProps(store: AppStore) {
