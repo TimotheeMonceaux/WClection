@@ -22,7 +22,9 @@ CREATE TABLE shop."Products"
 	"CollectionId" bigint NOT NULL,
     "Name" character varying COLLATE pg_catalog."default" NOT NULL,
     "Description" character varying COLLATE pg_catalog."default",
-    "Image" character varying COLLATE pg_catalog."default",
+    "Image1" character varying COLLATE pg_catalog."default",
+    "Image2" character varying COLLATE pg_catalog."default",
+    "Image3" character varying COLLATE pg_catalog."default",
     "IsActive" boolean NOT NULL DEFAULT true,
     CONSTRAINT "Products_pkey" PRIMARY KEY ("Id")
 )

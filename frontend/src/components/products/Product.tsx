@@ -47,7 +47,7 @@ function Product(props: ConnectedProps<typeof connectProduct> & {productId: numb
           component="img"
           alt={product.name}
           height="300"
-          image={product.image}
+          image={product.image1}
           title={product.name}
         />
         <CardContent>

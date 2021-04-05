@@ -18,7 +18,9 @@ export default class Collection {
             id: number,
             name: string,
             description: string | null | undefined,
-            image: string | null | undefined
+            image1: string | null | undefined,
+            image2: string | null | undefined,
+            image3: string | null | undefined
             }>} {
                 return {
                     name: this.name,
