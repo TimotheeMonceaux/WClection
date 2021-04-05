@@ -1,2 +1,3 @@
 node_modules/
 dbconfig.cmd
+dbconfig.local.cmd

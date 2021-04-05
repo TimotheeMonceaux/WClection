@@ -19,10 +19,6 @@ function Item(props: {name: string, description: string, picture: string}) {
     return <SPaper square style={{backgroundImage: `url(${props.picture})`}}>
         <h2>{props.name}</h2>
         <p>{props.description}</p>
-
-        <Button className="CheckButton" style={{color: "white"}}>
-            Check it out!
-        </Button>
     </SPaper>;
 }
 
