@@ -44,7 +44,7 @@ function SignupForm(props: ConnectedProps<typeof connectSignupForm>) {
     const [repeatPasswordValue, setRepeatPasswordValue] = useState("");
     const [repeatPasswordError, setRepeatPasswordError] = useState(false);
 
-    if (props.isUserLoggedIn) return <Redirect to="/" />
+    if (props.isUserLoggedIn) return <Redirect to="/signupconfirm" />
 
 
     function isEmail(s:string): boolean {

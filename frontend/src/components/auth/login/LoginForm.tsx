@@ -42,7 +42,11 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
     const [passwordValue, setPasswordValue] = useState("");
     const [passwordError, setPasswordError] = useState(false);
 
-    if (props.isUserLoggedIn) return <Redirect to="/" />
+    if (props.isUserLoggedIn) {
+        const sp = new URLSearchParams(window.location.search);
+        if (sp.has('callback')) return <Redirect to={sp.get('callback') ?? '/'} />
+        return <Redirect to="/" />
+    }
 
 
     function isEmail(s:string): boolean {

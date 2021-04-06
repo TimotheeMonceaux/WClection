@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography'; 
@@ -83,6 +84,7 @@ function ProductDetailsModal(props: ConnectedProps<typeof connectProductDetailsM
     const [quantity, setQuantity] = useState(1);
     const [imageIndex, setImageIndex] = useState(1);
     const classes = useStyles();
+    const history = useHistory();
     const product = props.getProduct(props.productId);
 
     function indexToImage(p: Product, i: number): string {
@@ -151,7 +153,7 @@ function ProductDetailsModal(props: ConnectedProps<typeof connectProductDetailsM
                 <Grid item xs={6}><Typography variant="body1" className={classes.quantity}>Quantité :</Typography></Grid>
                 <Grid item xs={6} style={{paddingTop: 25}}><TextField type="number" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value))}/></Grid>
             </Grid>
-            <Button size="small" color="primary" variant="contained">
+            <Button size="small" color="primary" variant="contained" onClick={() => {props.addToCart(props.productId, quantity); history.push('/checkout')}}>
                 Acheter Maintenant
             </Button>
             <Button size="small" color="primary" onClick={() => props.addToCart(props.productId, quantity)}>

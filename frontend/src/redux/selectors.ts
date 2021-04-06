@@ -27,3 +27,5 @@ export const getProduct = createSelector(getProducts, (products) => _.memoize((k
 export const getCartSize = createSelector(getCart, cart => Object.keys(cart).length);
 
 export const getCartItems = createSelector(getCart, cart => Object.keys(cart).map(id => parseInt(id)));
+
+export const getCartValue = createSelector(getCart, cart => 19.99 * Object.values(cart).reduce((a, b) => a + b, 0));

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { connect, ConnectedProps } from 'react-redux';
 import Container from '@material-ui/core/Container';
 import Modal from '@material-ui/core/Modal';
@@ -11,6 +11,7 @@ import HeaderBar from './headerbar/Headerbar';
 import LoginPage from './auth/login/LoginPage';
 import SignupPage from './auth/signup/SignupPage';
 import { AppStore } from '../redux/action-types';
+import { isUserLoggedIn } from '../redux/selectors';
 import AppCarousel from './carousel/Carousel';
 import Collections from './products/Collections';
 import Footer from './footer/Footer';
@@ -32,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 function mapStoreToProps(store: AppStore) {
   return {
       globalAppError: store.globalAppError,
+      isUserLoggedIn: isUserLoggedIn(store)
   }
 }
 
@@ -57,6 +59,13 @@ function App(props: ConnectedProps<typeof connectApp>) {
         </Route>
         <Route path="/signup">
           <SignupPage />
+        </Route>
+        <Route path="/checkout">
+          {!props.isUserLoggedIn && <Redirect to="/login?callback=%2Fcheckout" />}
+          <Typography variant="h3" style={{position: 'absolute', top: '25vh', left: '25vw'}}>Rends l'argent, Victor !</Typography>
+        </Route>
+        <Route path="/signupconfirm">
+          <Typography variant="h3" style={{position: 'absolute', top: '25vh', left: '15vw', width: '70vw'}}>Merci de votre inscription, un email de confirmation vous a été envoyé. Lol non je déconne je suis juste un texte statique je peux pas envoyer de mails encore xptdr</Typography>
         </Route>
         <Route path="/">
           <Container fixed style={{marginTop: 75}}>

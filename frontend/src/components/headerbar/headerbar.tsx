@@ -6,13 +6,14 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Badge from '@material-ui/core/Badge';
 import ShoppingCart from '@material-ui/icons/ShoppingCart';
 
 import { AppStore } from '../../redux/action-types';
-import { getCartSize, getCartItems } from '../../redux/selectors';
+import { getCartSize, getCartItems, getCartValue } from '../../redux/selectors';
 import UserCard from '../auth/UserCard';
 import CartMenuItem from './CartMenuItem';
 
@@ -34,6 +35,7 @@ function mapStoreToProps(store: AppStore) {
   return {
     cartSize: getCartSize(store),
     cartItems: getCartItems(store),
+    cartValue: getCartValue(store),
     cart: store.cart
   }
 }
@@ -72,7 +74,10 @@ function HeaderBar(props: ConnectedProps<typeof connectHeaderBar>) {
               <div> {/* This div serves as Menu popover anchor. The anchor cannot be a connected component such as CartMenuItem due to ref forwarding issues. Read more : https://stackoverflow.com/questions/56307332/how-to-use-custom-functional-components-within-material-ui-menu */}
                 {props.cartSize === 0 ? 
                   <MenuItem><i>Votre panier est vide</i></MenuItem> : 
-                  props.cartItems.map(productId => <CartMenuItem productId={productId} quantity={props.cart[productId]} key={productId} />)}
+                  <div>
+                    {props.cartItems.map(productId => <CartMenuItem productId={productId} quantity={props.cart[productId]} key={productId} />)}
+                    <MenuItem>Total: {props.cartValue.toLocaleString("fr")}€ <Button variant="contained" color="primary" style={{marginLeft: 10}} onClick={() => history.push('/checkout')}>Acheter Maintenant</Button></MenuItem>
+                  </div>}
               </div>
           </Menu>
           <UserCard />
