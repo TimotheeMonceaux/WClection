@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Redirect } from 'react-router';
-import { TextField, Typography, Button } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import MuiAlert from '@material-ui/lab/Alert';
 import styled from 'styled-components';
 

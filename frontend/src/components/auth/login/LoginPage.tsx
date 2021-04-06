@@ -1,5 +1,8 @@
 import { useHistory } from 'react-router-dom';
-import { Container, Paper, Tab, Tabs } from "@material-ui/core";
+import Container from '@material-ui/core/Container';
+import Paper from '@material-ui/core/Paper';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
 import { makeStyles } from '@material-ui/core/styles';
 
 import LoginForm from "./LoginForm";

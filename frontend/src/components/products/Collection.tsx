@@ -1,4 +1,6 @@
-import { GridList, GridListTile, Typography } from "@material-ui/core";
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import Typography from '@material-ui/core/Typography'; 
 
 import Product from './Product';
 

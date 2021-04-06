@@ -1,6 +1,8 @@
 import { Fragment, useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { GridList, GridListTile, Typography } from "@material-ui/core";
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import Typography from '@material-ui/core/Typography'; 
 import { Skeleton } from '@material-ui/lab';
 
 import { AppStore, AppDispatch } from '../../redux/action-types';
