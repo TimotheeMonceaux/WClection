@@ -13,7 +13,7 @@ import Modal from '@material-ui/core/Modal';
 import { AppStore, AppDispatch } from '../../redux/action-types';
 import { getProduct } from '../../redux/selectors';
 import Actions from '../../redux/actions';
-import DetailsModal from './DetailsModal';
+import ProductDetailsModal from './ProductDetailsModal';
 
 const useStyles = makeStyles({
   root: {
@@ -68,7 +68,7 @@ function Product(props: ConnectedProps<typeof connectProduct> & {productId: numb
         </Button>
       </CardActions>
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
-        <DetailsModal productId={props.productId} />
+        <ProductDetailsModal productId={props.productId} />
       </Modal>
     </Card>
   );
