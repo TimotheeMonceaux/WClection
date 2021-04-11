@@ -7,7 +7,7 @@ import User from '../models/auth/user';
 import { hashPassword } from '../utils/db';
 
 export async function retrieveUser(email: string): Promise<User | undefined> {
-    const row = await querySingle('SELECT * FROM "auth"."Users" WHERE "Email"=$1', [email]);
+    const row = await querySingle('SELECT * FROM "auth"."Users" WHERE "Email"=$1', [email.toLowerCase()]);
     if (row === undefined) {
         log("RETRIEVE_USER", email, "Error");
         return undefined;
@@ -35,7 +35,7 @@ export async function login(user: User, password: string): Promise<{success: boo
 
 export async function signup(email: string, password: string): Promise<{success: boolean, token: string | null}> {
     const passwordHash = await hashPassword(password);
-    const {table, data} = new User(email, passwordHash).getInsertParameters();
+    const {table, data} = new User(email.toLowerCase(), passwordHash).getInsertParameters();
     const success = await insert(table, data);
 
     if (!success) {
