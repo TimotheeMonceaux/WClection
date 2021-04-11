@@ -19,26 +19,23 @@ ALTER SEQUENCE shop."Products_Id_seq"
 CREATE TABLE shop."Products"
 (
     "Id" bigint NOT NULL DEFAULT nextval('shop."Products_Id_seq"'::regclass),
-	"CollectionId" bigint NOT NULL,
+    "CollectionId" bigint NOT NULL,
     "Name" character varying COLLATE pg_catalog."default" NOT NULL,
     "Description" character varying COLLATE pg_catalog."default",
-    "Image1" character varying COLLATE pg_catalog."default",
-    "Image2" character varying COLLATE pg_catalog."default",
-    "Image3" character varying COLLATE pg_catalog."default",
+    "BasePrice" money NOT NULL,
+    "Price" money NOT NULL,
+    "MainImage" character varying COLLATE pg_catalog."default" NOT NULL,
+    "SecondaryImage" character varying COLLATE pg_catalog."default",
+    "Images" character varying[] COLLATE pg_catalog."default",
     "IsActive" boolean NOT NULL DEFAULT true,
-    CONSTRAINT "Products_pkey" PRIMARY KEY ("Id")
+    CONSTRAINT "Products_pkey" PRIMARY KEY ("Id"),
+    CONSTRAINT "Products_fkey_Collections" FOREIGN KEY ("CollectionId")
+        REFERENCES shop."Collections" ("Id") MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
 )
 
 TABLESPACE pg_default;
 
 ALTER TABLE shop."Products"
     OWNER to postgres;
-
-ALTER TABLE shop."Products"
-    ADD CONSTRAINT "Products_fkey_Collections" FOREIGN KEY ("CollectionId")
-    REFERENCES shop."Collections" ("Id")
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
-    NOT VALID;
-CREATE INDEX "fki_Collections"
-    ON shop."Products"("CollectionId");
