@@ -33,6 +33,7 @@ authRouter.post('/login',
 authRouter.post('/signup',
     body('email').isEmail(),
     body('password').isLength({min: 8}),
+    body('newsletter').isBoolean(),
     (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -45,13 +46,13 @@ authRouter.post('/signup',
                     return res.status(401).json({success: false, msg: "Cet email est déjà utilisé"});
                 }
                 
-                signup(req.body.email, req.body.password)
+                signup(req.body.email, req.body.password, req.body.newsletter)
                     .then(st => {
                         if (!st.success) {
                             return res.status(500).json({success: false, msg: "Internal server error"});
                         }
 
-                        return res.status(200).json({success:true, token: st.token, user: new User(req.body.email, '', null, null, null, null).toFrontend()});
+                        return res.status(200).json({success:true, token: st.token, user: new User(req.body.email, '').toFrontend()});
                     })
                     .catch(e => console.error(e.stack));
             });

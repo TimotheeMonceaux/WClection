@@ -8,17 +8,20 @@ export default class User {
     firstName: string | null | undefined;
     middleName: string | null | undefined;
     lastName: string | null | undefined;
+    newsletter: boolean | null | undefined;
 
     constructor(
         email: string,
         passwordHash: string,
-        id: number | null | undefined= undefined,
+        newsletter: boolean | null | undefined = undefined,
+        id: number | null | undefined = undefined,
         firstName: string | null | undefined= undefined,
         middleName: string | null | undefined = undefined,
         lastName: string | null | undefined = undefined
     ) {
         this.email = email;
         this.passwordHash = passwordHash;
+        this.newsletter = newsletter;
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;

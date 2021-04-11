@@ -4,6 +4,9 @@ import { Redirect } from 'react-router';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import CheckBox from '@material-ui/core/Checkbox';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import MuiAlert from '@material-ui/lab/Alert';
 import styled from 'styled-components';
 
@@ -29,7 +32,7 @@ function mapStoreToProps(store: AppStore) {
 
 function mapDispatchToProps(dispatch: AppDispatch) {
     return {
-        signup: (email: string, password: string) => {dispatch(Actions.userSignup(email, password))},
+        signup: (email: string, password: string, newsletter: boolean) => {dispatch(Actions.userSignup(email, password, newsletter))},
         removeAuthErrorMsg: () => {dispatch(Actions.removeAuthErrorMsg())}
     }
 }
@@ -43,6 +46,8 @@ function SignupForm(props: ConnectedProps<typeof connectSignupForm>) {
     const [passwordError, setPasswordError] = useState(false);
     const [repeatPasswordValue, setRepeatPasswordValue] = useState("");
     const [repeatPasswordError, setRepeatPasswordError] = useState(false);
+    const [cgvChecked, setCgvChecked] = useState(false);
+    const [newsletterChecked, setNewsletterChecked] = useState(false);
 
     if (props.isUserLoggedIn) return <Redirect to="/signupconfirm" />
 
@@ -50,6 +55,11 @@ function SignupForm(props: ConnectedProps<typeof connectSignupForm>) {
     function isEmail(s:string): boolean {
         const s2 = s.split("@")[1];
         return s2 !== undefined && s2.indexOf(".") > 0;
+    }
+
+    function isFormComplete(omitCgv = false): boolean {
+        return emailValue !== "" && passwordValue !== "" && repeatPasswordValue !== "" 
+            && !emailError && !passwordError && !repeatPasswordError && (cgvChecked || omitCgv);
     }
 
     function handleEmailChange(s: string): void {
@@ -74,7 +84,8 @@ function SignupForm(props: ConnectedProps<typeof connectSignupForm>) {
         className="form-input"
         margin="normal"
         error={emailError}
-        onChange={(e) => handleEmailChange(e.target.value)}
+        autoFocus={true}
+        onBlur={(e) => handleEmailChange(e.target.value)}
         />
     {emailError && <Typography variant="body1" style={{color: "red"}}>Veuillez saisir une adresse email valide</Typography>}
     <br />
@@ -95,16 +106,28 @@ function SignupForm(props: ConnectedProps<typeof connectSignupForm>) {
         margin="normal"
         type="password"
         error={repeatPasswordError}
-        onChange={(e) => handleRepeatPasswordChange(e.target.value, passwordValue)} />
+        onChange={(e) => handleRepeatPasswordChange(e.target.value, passwordValue)} 
+        onKeyDown={(e) => {if (e.key === "Enter" && isFormComplete()) props.signup(emailValue, passwordValue, newsletterChecked)}}/>
     {repeatPasswordError && <Typography variant="body1" style={{color: "red"}}>Les mots de passe ne correspondent pas</Typography>}
+    <br />
+    <FormControlLabel
+        control={<CheckBox checked={cgvChecked} onChange={() => setCgvChecked(!cgvChecked)} name="cgv" color="primary"/>}
+        label={<Typography variant="body1">J'accepte les termes et conditions ainsi que la politique de confidentialité.</Typography>}
+        />
+        {isFormComplete(true) && !cgvChecked && <FormHelperText error={true}>Il est nécessaire d'accepter les CGV pour continuer</FormHelperText>}
+    <br />
+    <FormControlLabel
+        control={<CheckBox checked={newsletterChecked} onChange={() => setNewsletterChecked(!newsletterChecked)} name="newsletter" color="primary" />}
+        label={<Typography variant="body1">S'inscrire à la newsletter.</Typography>}
+        />
     <br />
     <Button 
         variant="contained" 
         color="primary" 
         className="form-input"
         style={{marginTop: 25}}
-        disabled={emailValue === "" || passwordValue === ""|| repeatPasswordValue === "" || emailError || passwordError || repeatPasswordError}
-        onClick={() => props.signup(emailValue, passwordValue)}>S'Inscrire</Button>
+        disabled={!isFormComplete()}
+        onClick={() => props.signup(emailValue, passwordValue, newsletterChecked)}>S'Inscrire</Button>
 
     {props.authErrorMsg && 
         <MuiAlert 

@@ -24,6 +24,7 @@ CREATE TABLE auth."Users"
     "FirstName" character varying COLLATE pg_catalog."default",
     "MiddleName" character varying COLLATE pg_catalog."default",
     "LastName" character varying COLLATE pg_catalog."default",
+    "Newsletter" boolean NOT NULL DEFAULT false,
     CONSTRAINT "Users_pkey" PRIMARY KEY ("Id")
 )
 

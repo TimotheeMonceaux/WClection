@@ -54,6 +54,10 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
         return s2 !== undefined && s2.indexOf(".") > 0;
     }
 
+    function isFormComplete(): boolean {
+        return emailValue + passwordValue !== "" && !emailError && !passwordError;
+    }
+
     function handleEmailChange(s: string): void {
         setEmailValue(s);
         setEmailError(!isEmail(s));
@@ -71,7 +75,8 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
         className="form-input" 
         error={emailError}
         margin="normal"
-        onChange={(e) => handleEmailChange(e.target.value)}
+        autoFocus={true}
+        onBlur={(e) => handleEmailChange(e.target.value)}
         />
     {emailError && <Typography variant="body1" style={{color: "red"}}>Veuillez saisir une adresse email valide</Typography>}
     <br />
@@ -82,7 +87,8 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
         type="password"
         error={passwordError}
         margin="normal"
-        onChange={(e) => handlePasswordChange(e.target.value)} />
+        onChange={(e) => handlePasswordChange(e.target.value)} 
+        onKeyDown={(e) => {if (e.key === "Enter" && isFormComplete()) props.login(emailValue, passwordValue)}}/>
     {passwordError && <Typography variant="body1" style={{color: "red"}}>Votre mot de passe doit faire au moins 8 caractères</Typography>}
     <br />
     <Button 
@@ -90,7 +96,7 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
         color="primary" 
         className="form-input"
         style={{marginTop: 25}}
-        disabled={emailValue + passwordValue === "" || emailError || passwordError}
+        disabled={!isFormComplete()}
         onClick={() => props.login(emailValue, passwordValue)}>Connexion</Button>
 
     {props.authErrorMsg && 

@@ -30,8 +30,8 @@ const userLogin = (email: string, password: string): AppAction =>
                     })
                     .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
 
-const userSignup = (email: string, password: string): AppAction => 
-    ((dispatch) => post("/api/auth/signup", {email, password})
+const userSignup = (email: string, password: string, newsletter: boolean): AppAction => 
+    ((dispatch) => post("/api/auth/signup", {email, password, newsletter})
                     .then(response => response.json())
                     .then(json => {
                         if (json.success) dispatch({type: ActionTypes.SIGNUP_SUCCESS, ...json});
