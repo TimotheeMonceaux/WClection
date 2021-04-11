@@ -36,18 +36,19 @@ function mapDispatchToProps(dispatch: AppDispatch) {
 const connectProduct = connect(mapStoreToProps, mapDispatchToProps);
 
 function Product(props: ConnectedProps<typeof connectProduct> & {productId: number}) {
-  const [openModal, setOpenModal] = useState(false);
   const classes = useStyles();
   const product = props.getProduct(props.productId);
+  const [openModal, setOpenModal] = useState(false);
+  const [image, setImage] = useState(product.mainImage);
 
   return (
     <Card className={classes.root}>
-      <CardActionArea onClick={() => setOpenModal(true)}>
+      <CardActionArea onClick={() => setOpenModal(true)} onMouseOver={() => setImage(product.secondaryImage)} onMouseOut={() => setImage(product.mainImage)}>
         <CardMedia
           component="img"
           alt={product.name}
           height="300"
-          image={product.mainImage}
+          image={image}
           title={product.name}
         />
         <CardContent>
