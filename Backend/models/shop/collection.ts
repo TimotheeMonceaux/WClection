@@ -18,10 +18,12 @@ export default class Collection {
             id: number,
             name: string,
             description: string | null | undefined,
-            image1: string | null | undefined,
-            image2: string | null | undefined,
-            image3: string | null | undefined
-            }>} {
+            basePrice: number,
+            price: number,
+            mainImage: string | null | undefined,
+            secondaryImage: string | null | undefined,
+            images: Array<string>
+        }>} {
                 return {
                     name: this.name,
                     products: this.products.map(p => p.toFrontend())

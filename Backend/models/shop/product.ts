@@ -4,33 +4,41 @@ export default class Product {
     id: number;
     name: string;
     description: string | null | undefined;
-    image1: string | null | undefined;
-    image2: string | null | undefined;
-    image3: string | null | undefined;
+    basePrice: number;
+    price: number;
+    mainImage: string;
+    secondaryImage: string | null | undefined;
+    images: Array<string>;
 
     constructor(
         id: number,
         name: string,
+        basePrice: number,
+        price: number,
+        mainImage: string,
         description: string | null | undefined = undefined,
-        image1: string | null | undefined = undefined,
-        image2: string | null | undefined = undefined,
-        image3: string | null | undefined = undefined
+        secondaryImage: string | null | undefined = undefined,
+        images: Array<string> | null | undefined = undefined
     ) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.image1 = image1;
-        this.image2 = image2;
-        this.image3 = image3;
+        this.basePrice = basePrice;
+        this.price = price;
+        this.mainImage = mainImage;
+        this.secondaryImage = secondaryImage;
+        this.images = images ?? [];
     }
 
     toFrontend(): {
         id: number,
         name: string,
         description: string | null | undefined,
-        image1: string | null | undefined,
-        image2: string | null | undefined,
-        image3: string | null | undefined
+        basePrice: number,
+        price: number,
+        mainImage: string | null | undefined,
+        secondaryImage: string | null | undefined,
+        images: Array<string>
     } {
         return filterNullValues(this);
     }

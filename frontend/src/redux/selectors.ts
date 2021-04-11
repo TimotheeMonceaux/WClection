@@ -24,8 +24,10 @@ export const areCollectionsLoaded = createSelector(getCollections, collections =
 
 export const getProduct = createSelector(getProducts, (products) => _.memoize((key: number): Product => products[key]));
 
-export const getCartSize = createSelector(getCart, cart => Object.keys(cart).length);
+export const getCartSize = createSelector(getCart, cart => Object.values(cart).reduce((a, b) => a + b, 0));
 
 export const getCartItems = createSelector(getCart, cart => Object.keys(cart).map(id => parseInt(id)));
 
-export const getCartValue = createSelector(getCart, cart => 19.99 * Object.values(cart).reduce((a, b) => a + b, 0));
+export const getCartValue = createSelector(getCart, getProducts, (cart, products) => Object.keys(cart).map(key => parseInt(key))
+                                                                                                      .map(id => cart[id] * products[id].price)
+                                                                                                      .reduce((a, b) => a + b, 0));

@@ -15,9 +15,11 @@ export type Product = {
     id: number,
     name: string,
     description: string,
-    image1: string,
-    image2: string,
-    image3: string
+    basePrice: number,
+    price: number,
+    mainImage: string,
+    secondaryImage: string,
+    images: Array<string>
 }
 
 export type Collection = {

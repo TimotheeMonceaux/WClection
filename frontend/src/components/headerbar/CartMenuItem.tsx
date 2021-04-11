@@ -39,7 +39,7 @@ function CartMenuItem(props: ConnectedProps<typeof connectCartMenuItem> & {produ
     const product = props.getProduct(props.productId);
 
     return <MenuItem>
-        <Avatar alt={product.name} src={product.image1} className={classes.avatar} /> 
+        <Avatar alt={product.name} src={product.mainImage} className={classes.avatar} /> 
         <Typography variant="subtitle1">{product.name} ({props.quantity})</Typography>
         <IconButton onClick={() => props.removeFromCart(props.productId)} className={classes.iconButton}><Clear color="inherit" /></IconButton>
     </MenuItem>;

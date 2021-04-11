@@ -49,11 +49,17 @@ const useStyles = makeStyles((theme) => ({
           borderColor: theme.palette.primary.main,
           height: 'fit-content'
       },
-      priceTag: {
+      priceTagContainer: {
         textAlign: 'right',
         color: theme.palette.common.white,
         backgroundColor: theme.palette.primary.main,
-        padding: theme.spacing(2)
+        padding: theme.spacing(2),
+        flexDirection: 'row-reverse'
+      },
+      oldPriceTag: {
+        textDecoration: 'line-through',
+        marginTop: 10,
+        marginRight: 10
       },
       priceShippingFees: {
         fontStyle: 'italic',
@@ -88,9 +94,10 @@ function ProductDetailsModal(props: ConnectedProps<typeof connectProductDetailsM
     const product = props.getProduct(props.productId);
 
     function indexToImage(p: Product, i: number): string {
-        if (i === 2) return p.image2;
-        if (i === 3) return p.image3;
-        return p.image1;
+        if (i === 2) return p.secondaryImage;
+        if (i === 3) return p.images[0];
+        if (i === 4) return p.images[1];
+        return p.mainImage;
     }
 
     return <Grid container spacing={3} className={classes.paper}>
@@ -108,7 +115,7 @@ function ProductDetailsModal(props: ConnectedProps<typeof connectProductDetailsM
                             component="img"
                             alt={product.name}
                             height="50"
-                            image={product.image1}
+                            image={product.mainImage}
                             title={product.name} />
                     </CardActionArea>
                 </Grid>
@@ -118,7 +125,7 @@ function ProductDetailsModal(props: ConnectedProps<typeof connectProductDetailsM
                             component="img"
                             alt={product.name}
                             height="50"
-                            image={product.image2}
+                            image={product.secondaryImage}
                             title={product.name} />
                     </CardActionArea>
                 </Grid>
@@ -128,7 +135,7 @@ function ProductDetailsModal(props: ConnectedProps<typeof connectProductDetailsM
                             component="img"
                             alt={product.name}
                             height="50"
-                            image={product.image3}
+                            image={product.images[0]}
                             title={product.name} />
                     </CardActionArea>
                 </Grid>
@@ -147,7 +154,10 @@ function ProductDetailsModal(props: ConnectedProps<typeof connectProductDetailsM
             <Typography variant="body1"><span className={classes.stockOk}><CheckCircleIcon className={classes.stockOkIcon} /> En Stock :</span>Expédié demain &amp; Réception estimée 48/72H après expédition (hors dimanches et jours fériés)</Typography>
         </Grid>
         <Grid item xs={4} className={classes.priceColumn}>
-            <Typography variant="h3" className={classes.priceTag}>19,99€</Typography>
+            <Grid container className={classes.priceTagContainer}>
+                <Typography variant="h3">{product.price}€</Typography>
+                {(product.basePrice > product.price) && <Typography variant="h4" className={classes.oldPriceTag}>{product.basePrice}€</Typography>}
+            </Grid>
             <Typography variant="body1" className={classes.priceShippingFees}>Frais de port offerts dès le premier article</Typography>
             <Grid container className={classes.quantity} spacing={3}>
                 <Grid item xs={6}><Typography variant="body1" className={classes.quantity}>Quantité :</Typography></Grid>
