@@ -7,8 +7,11 @@ import Typography from '@material-ui/core/Typography';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import TextField from '@material-ui/core/TextField';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import ArrowForwardIos from '@material-ui/icons/ArrowForwardIos';
+import ArrowBackIos from '@material-ui/icons/ArrowBackIos';
 
 import { AppStore, AppDispatch } from '../../redux/action-types';
 import Actions from '../../redux/actions';
@@ -87,16 +90,17 @@ function mapDispatchToProps(dispatch: AppDispatch) {
 const connectProductDetailsModal = connect(mapStoreToProps, mapDispatchToProps);
 
 function ProductDetailsModal(props: ConnectedProps<typeof connectProductDetailsModal> & {productId: number}) {
+    const product = props.getProduct(props.productId);
     const [quantity, setQuantity] = useState(1);
-    const [imageIndex, setImageIndex] = useState(1);
+    const [imageIndex, setImageIndex] = useState(0);
+    const [offsetIndex, setOffsetIndex] = useState(0);
     const classes = useStyles();
     const history = useHistory();
-    const product = props.getProduct(props.productId);
+    const maxIndex = product.images.length + 2;
 
     function indexToImage(p: Product, i: number): string {
-        if (i === 2) return p.secondaryImage;
-        if (i === 3) return p.images[0];
-        if (i === 4) return p.images[1];
+        if (i === 1) return p.secondaryImage;
+        if (i >= 2 && i <= maxIndex) return p.images[i-2];
         return p.mainImage;
     }
 
@@ -108,37 +112,41 @@ function ProductDetailsModal(props: ConnectedProps<typeof connectProductDetailsM
                 height="400"
                 image={indexToImage(product, imageIndex)}
                 title={product.name} />
-            <Grid container spacing={3} className={classes.imageSelector} justify="center">
-                <Grid item xs={3}>
-                    <CardActionArea onClick={() => setImageIndex(1)}>
-                        <CardMedia
-                            component="img"
-                            alt={product.name}
-                            height="50"
-                            image={product.mainImage}
-                            title={product.name} />
-                    </CardActionArea>
+            <Grid container spacing={2} className={classes.imageSelector} justify="center">
+                <Grid item xs={2}><IconButton disabled={offsetIndex <= 0} onClick={() => setOffsetIndex(offsetIndex - 1)} color="primary"><ArrowBackIos /></IconButton></Grid>
+                <Grid container item xs={8} spacing={2}>
+                    <Grid item xs={4}>
+                        <CardActionArea onClick={() => setImageIndex(offsetIndex)}>
+                            <CardMedia
+                                component="img"
+                                alt={product.name}
+                                height="50"
+                                image={indexToImage(product, offsetIndex)}
+                                title={product.name} />
+                        </CardActionArea>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <CardActionArea onClick={() => setImageIndex(offsetIndex + 1)}>
+                            <CardMedia
+                                component="img"
+                                alt={product.name}
+                                height="50"
+                                image={indexToImage(product, offsetIndex + 1)}
+                                title={product.name} />
+                        </CardActionArea>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <CardActionArea onClick={() => setImageIndex(offsetIndex + 2)}>
+                            <CardMedia
+                                component="img"
+                                alt={product.name}
+                                height="50"
+                                image={indexToImage(product, offsetIndex + 2)}
+                                title={product.name} />
+                        </CardActionArea>
+                    </Grid>
                 </Grid>
-                <Grid item xs={3}>
-                    <CardActionArea onClick={() => setImageIndex(2)}>
-                        <CardMedia
-                            component="img"
-                            alt={product.name}
-                            height="50"
-                            image={product.secondaryImage}
-                            title={product.name} />
-                    </CardActionArea>
-                </Grid>
-                <Grid item xs={3}>
-                    <CardActionArea onClick={() => setImageIndex(3)}>
-                        <CardMedia
-                            component="img"
-                            alt={product.name}
-                            height="50"
-                            image={product.images[0]}
-                            title={product.name} />
-                    </CardActionArea>
-                </Grid>
+                <Grid item xs={2}><IconButton disabled={offsetIndex >= maxIndex - 3} onClick={() => setOffsetIndex(offsetIndex + 1)} color="primary"><ArrowForwardIos /></IconButton></Grid>
             </Grid>
         </Grid>
         <Grid item xs={5}>
