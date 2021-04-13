@@ -21,10 +21,11 @@ import { Product } from '../../redux/store-types';
 const useStyles = makeStyles((theme) => ({
     paper: {
         position: 'absolute',
-        top: '20vh',
-        left: '10vw',
-        width: '80vw',
-        maxHeight: '60vh',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        maxWidth: '90vw',
+        maxHeight: '80vh',
         backgroundColor: theme.palette.background.paper,
         boxShadow: theme.shadows[5],
         padding: theme.spacing(2, 4, 3)
