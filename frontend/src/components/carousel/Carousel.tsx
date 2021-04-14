@@ -47,7 +47,7 @@ function AppCarousel(props: ConnectedProps<typeof connectAppCarousel>) {
     const load = props.loadCarouselSlides;
     useEffect(() => {load()}, [load]);
 
-    if (!props.areCarouselSlidesLoaded) return <Skeleton variant="rect" height="33vh" />;;
+    if (!props.areCarouselSlidesLoaded) return <Skeleton variant="rect" height="33vh" />;
     
     return <Carousel navButtonsAlwaysVisible animation="slide">
         {props.carouselSlides.map((item, i)  => <Item key={i} name={item.name} description={item.description} picture={item.image} />)}

@@ -1,7 +1,7 @@
 import { AnyAction } from 'redux';
 import ActionTypes, { AppAction } from './action-types';
 
-const serverUrl = "http://wclection.com";
+const serverUrl = "http://localhost:8000";
 
 function get(endpoint: string): Promise<Response> {
     return fetch(serverUrl + endpoint);
@@ -37,6 +37,15 @@ const userSignup = (email: string, password: string, newsletter: boolean): AppAc
                         if (json.success) dispatch({type: ActionTypes.SIGNUP_SUCCESS, ...json});
                         else dispatch({type: ActionTypes.AUTH_ERROR, msg: json.msg});
                     })
+                    .catch(error => dispatch({type: ActionTypes.SIGNUP_CONFIRM_EMAIL_ERROR, error: JSON.stringify(error)})));
+
+const confirmEmail = (email: string, key: string): AppAction =>
+    ((dispatch) => get(`/api/auth/confirmEmail?email=${encodeURIComponent(email)}&key=${encodeURIComponent(key)}`)
+                    .then(response => response.json())
+                    .then(json => {
+                        if (json.success) dispatch({type: ActionTypes.SIGNUP_CONFIRM_EMAIL_SUCCESS, ...json});
+                        else dispatch({type: ActionTypes.SIGNUP_CONFIRM_EMAIL_ERROR, msg: json.msg});
+                    })
                     .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
 
 const removeAuthErrorMsg = (): AnyAction => ({type: ActionTypes.REMOVE_AUTH_ERROR_MSG});
@@ -67,6 +76,7 @@ const actions = {
     setGlobalAppError,
     userLogin,
     userSignup,
+    confirmEmail,
     removeAuthErrorMsg,
     userLogout,
     loadCarouselSlides,

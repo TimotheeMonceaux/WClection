@@ -12,7 +12,7 @@ const globalAppError = (globalAppError = '', action: AnyAction): string => {
 }
 
 const authErrorMsg = (authErrorMsg = '', action: AnyAction): string => {
-    if (action.type === ActionTypes.AUTH_ERROR)
+    if (action.type === ActionTypes.AUTH_ERROR || action.type === ActionTypes.SIGNUP_CONFIRM_EMAIL_ERROR )
         return action.msg;
 
     if (action.type === ActionTypes.LOGIN_SUCCESS || action.type === ActionTypes.SIGNUP_SUCCESS || action.type === ActionTypes.REMOVE_AUTH_ERROR_MSG)
@@ -22,7 +22,7 @@ const authErrorMsg = (authErrorMsg = '', action: AnyAction): string => {
 }
 
 const userToken = (userToken:string = '', action: AnyAction): string => {
-    if (action.type === ActionTypes.LOGIN_SUCCESS || action.type === ActionTypes.SIGNUP_SUCCESS)
+    if (action.type === ActionTypes.LOGIN_SUCCESS || action.type === ActionTypes.SIGNUP_SUCCESS || action.type === ActionTypes.SIGNUP_CONFIRM_EMAIL_SUCCESS)
         return action.token;
 
     if (action.type === ActionTypes.LOGOUT)
@@ -45,6 +45,16 @@ const userProfile = (userProfile: UserProfile = defaultUserProfile, action: AnyA
         return defaultUserProfile;
     
     return userProfile;
+}
+
+const confirmEmailStatus = (status: boolean | null = null, action: AnyAction): boolean | null => {
+    if (action.type === ActionTypes.SIGNUP_CONFIRM_EMAIL_SUCCESS)
+        return true;
+    
+    if (action.type === ActionTypes.SIGNUP_CONFIRM_EMAIL_ERROR)
+        return false;
+
+    return status;
 }
 
 const carouselSlides = (carouselSlides: Array<CarouselSlide> = [], action: AnyAction): Array<CarouselSlide> => {
@@ -85,6 +95,7 @@ export default combineReducers({
     authErrorMsg,
     userToken,
     userProfile,
+    confirmEmailStatus,
     carouselSlides,
     collections,
     products,

@@ -15,6 +15,7 @@ import { isUserLoggedIn } from '../redux/selectors';
 import AppCarousel from './carousel/Carousel';
 import Collections from './products/Collections';
 import Footer from './footer/Footer';
+import SignupConfirm from './auth/signup/SignupConfirm';
 
 const useStyles = makeStyles((theme) => ({
   errorModal: {
@@ -64,8 +65,11 @@ function App(props: ConnectedProps<typeof connectApp>) {
           {!props.isUserLoggedIn && <Redirect to="/login?callback=%2Fcheckout" />}
           <Typography variant="h3" style={{position: 'absolute', top: '25vh', left: '25vw'}}>Rends l'argent, Victor !</Typography>
         </Route>
-        <Route path="/signupconfirm">
+        <Route path="/signupConfirm">
           <Typography variant="h3" style={{position: 'absolute', top: '25vh', left: '15vw', width: '70vw'}}>Merci de votre inscription, un email de confirmation vous a été envoyé. Lol non je déconne je suis juste un texte statique je peux pas envoyer de mails encore xptdr</Typography>
+        </Route>
+        <Route path="/confirmEmail">
+          <SignupConfirm />
         </Route>
         <Route path="/">
           <Container fixed style={{marginTop: 75}}>
