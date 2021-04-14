@@ -4,10 +4,6 @@ function jsFieldToColumnName(key: string): string {
     return `"${key.charAt(0).toUpperCase() + key.slice(1)}"`;
 }
 
-function escapeString(value: any): string {
-    return (typeof value === 'string' ? `'${value}'` : `${value}`);
-}
-
 export function getInsertParameters(data: any): Array<[string, string]> {
     return Object.keys(data).filter(key => key.toLowerCase() !== 'id' && key !== 'TABLE_NAME' && data[key] !== undefined)
                                .map(key => [jsFieldToColumnName(key), data[key]]);

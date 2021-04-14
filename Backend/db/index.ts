@@ -33,9 +33,20 @@ export async function querySingle(text: string, values: Array<string>): Promise<
 export async function insert(obj: IDbObject): Promise<boolean> {
     const params = obj.getInsertParameters();
     const start = Date.now();
-    const result = await pool.query(`INSERT INTO ${obj.TABLE_NAME} (${params.map(t => t[0]).join(', ')}) VALUES (${params.map((t, i) => `\$${i+1}`).join(', ')});`, params.map(t => t[1]));
+    const result = await pool.query(`INSERT INTO ${obj.TABLE_NAME} (${params.map(t => t[0]).join(', ')}) VALUES (${params.map((t, i) => `\$${i + 1}`).join(', ')});`, params.map(t => t[1]));
     const duration = Date.now() - start;
     console.log('[INFO] Query: ', {text: `INSERT INTO ${obj.TABLE_NAME}`, duration, rows: result.rowCount});
+    return result.rowCount === 1;
+}
+
+export async function update(table: string, keys: Array<[string, string]>, values: Array<[string, string]>): Promise<boolean> {
+    const start = Date.now();
+    const result = await pool.query(`UPDATE ${table} 
+                                    SET ${values.map((t, i) => `${t[0]} = \$${i + 1}`).join(', ')}
+                                    WHERE ${keys.map((t, i) => `${t[0]} = \$${values.length + i + 1}`).join(' AND ')}`, 
+                                    values.concat(keys).map(t => t[1]));
+    const duration = Date.now() - start;
+    console.log('[INFO] Query: ', {text: `UPDATE ${table}`, duration, rows: result.rowCount});
     return result.rowCount === 1;
 }
 

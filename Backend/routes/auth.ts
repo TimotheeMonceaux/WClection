@@ -1,6 +1,6 @@
 import express from 'express';
-import { body, validationResult } from 'express-validator';
-import { login, retrieveUser, signup } from '../controllers/auth';
+import { body, check, validationResult } from 'express-validator';
+import { confirmEmail, login, retrieveEmailConfirmationCache, retrieveUser, signup } from '../controllers/auth';
 import User from '../models/auth/user';
 
 const authRouter = express.Router();
@@ -27,7 +27,8 @@ authRouter.post('/login',
                         }
                         return res.status(200).json({success: true, token: st.token, user: usr!.toFrontend()});
                     })
-            });
+            })
+            .catch(e => {console.error(e.stack); return res.status(500).json("An unexpected error has occured.")});
     });
 
 authRouter.post('/signup',
@@ -53,9 +54,36 @@ authRouter.post('/signup',
                         }
 
                         return res.status(200).json({success:true, token: st.token, user: new User(req.body.email, '').toFrontend()});
-                    })
-                    .catch(e => console.error(e.stack));
-            });
+                    });
+            })
+            .catch(e => {console.error(e.stack); return res.status(500).json("An unexpected error has occured.")});
+    });
+
+authRouter.get('/confirmEmail',
+    check('email').isEmail(),
+    check('key').isUUID(),
+    (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({success: false, msg: "Invalid request", errors: errors.array()});
+        }
+
+        retrieveEmailConfirmationCache(req.query!.email, req.query!.key)
+            .then(ecc => {
+                if (ecc === undefined) {
+                    return res.status(401).json({success: false, msg: "Ce lien n'est plus valide"});
+                }
+
+                confirmEmail(ecc.email, ecc.validUntil)
+                    .then(st => {
+                        if (!st.success) {
+                            return res.status(401).json({success: false, msg: "Ce lien n'est plus valide"})
+                        }
+
+                        return res.status(200).json({success:true, token: st.token})
+                    });
+            })
+            .catch(e => {console.error(e.stack); return res.status(500).json("An unexpected error has occured.")});
     });
 
 export default authRouter;

@@ -15,7 +15,7 @@ ALTER SEQUENCE common."Logs_Id_seq"
 CREATE TABLE common."Logs"
 (
     "Id" bigserial NOT NULL,
-    "CreateDate" timestamp without time zone NOT NULL DEFAULT NOW(),
+    "CreateDate" timestamp with time zone NOT NULL DEFAULT NOW(),
     "Type" character varying NOT NULL,
     "User" character varying,
     "Result" character varying,
