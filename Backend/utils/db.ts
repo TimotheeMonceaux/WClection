@@ -8,12 +8,9 @@ function escapeString(value: any): string {
     return (typeof value === 'string' ? `'${value}'` : `${value}`);
 }
 
-export function getInsertParameters(table: string, data: any):  {table: string, data: Array<[string, string]>} {
-    return {
-        table: table, 
-        data: Object.keys(data).filter(key => data[key] !== undefined)
-                              .map(key => [jsFieldToColumnName(key), data[key]])
-    }
+export function getInsertParameters(data: any): Array<[string, string]> {
+    return Object.keys(data).filter(key => key.toLowerCase() !== 'id' && key !== 'TABLE_NAME' && data[key] !== undefined)
+                               .map(key => [jsFieldToColumnName(key), data[key]]);
 }
 
 export async function hashPassword(pwd: string): Promise<string> {

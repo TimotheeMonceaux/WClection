@@ -1,35 +1,22 @@
+import { IDbObject } from "../../db";
 import { getInsertParameters } from "../../utils/db";
 import { filterNullValues } from "../../utils/object";
 
-export default class User {
-    email: string;
-    passwordHash: string;
-    id: number | null | undefined;
-    firstName: string | null | undefined;
-    middleName: string | null | undefined;
-    lastName: string | null | undefined;
-    newsletter: boolean | null | undefined;
-
+export default class User implements IDbObject{
     constructor(
-        email: string,
-        passwordHash: string,
-        newsletter: boolean | null | undefined = undefined,
-        id: number | null | undefined = undefined,
-        firstName: string | null | undefined= undefined,
-        middleName: string | null | undefined = undefined,
-        lastName: string | null | undefined = undefined
-    ) {
-        this.email = email;
-        this.passwordHash = passwordHash;
-        this.newsletter = newsletter;
-        this.id = id;
-        this.firstName = firstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-    }
+        public email: string,
+        public passwordHash: string,
+        public confirmed?: boolean,
+        public newsletter?: boolean,
+        public firstName?: string,
+        public middleName?: string,
+        public lastName?: string,
+        public id?: number) {}
 
-    getInsertParameters(): {table: string, data: Array<[string, string]>} {
-        return getInsertParameters('"auth"."Users"', this);
+    public readonly TABLE_NAME = 'auth."Users"';
+
+    getInsertParameters(): Array<[string, string]> {
+        return getInsertParameters(this);
     }
 
     toFrontend(): {

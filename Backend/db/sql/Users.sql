@@ -1,5 +1,6 @@
 -- SEQUENCE: auth.Users_Id_seq
 
+-- DROP TABLE auth."Users";
 -- DROP SEQUENCE auth."Users_Id_seq";
 
 CREATE SEQUENCE auth."Users_Id_seq"
@@ -14,17 +15,17 @@ ALTER SEQUENCE auth."Users_Id_seq"
 
 -- Table: auth.Users
 
--- DROP TABLE auth."Users";
 
 CREATE TABLE auth."Users"
 (
     "Id" bigint NOT NULL DEFAULT nextval('auth."Users_Id_seq"'::regclass),
-    "Email" character varying COLLATE pg_catalog."default" NOT NULL,
+    "Email" character varying COLLATE pg_catalog."default" UNIQUE NOT NULL,
     "PasswordHash" character varying COLLATE pg_catalog."default" NOT NULL,
     "FirstName" character varying COLLATE pg_catalog."default",
     "MiddleName" character varying COLLATE pg_catalog."default",
     "LastName" character varying COLLATE pg_catalog."default",
     "Newsletter" boolean NOT NULL DEFAULT false,
+    "Confirmed" boolean NOT NULL DEFAULT false,
     CONSTRAINT "Users_pkey" PRIMARY KEY ("Id")
 )
 

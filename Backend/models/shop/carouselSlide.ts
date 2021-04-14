@@ -1,23 +1,17 @@
+import { IDbObject } from "../../db";
 import { getInsertParameters } from "../../utils/db";
 import { filterNullValues } from "../../utils/object";
 
-export default class CarouselSlide {
-    image: string;
-    name: string | null | undefined;
-    description: string | null | undefined;
-
+export default class CarouselSlide implements IDbObject {
     constructor(
-        image: string,
-        name: string | null | undefined = undefined,
-        description: string | null | undefined = undefined
-    ) {
-        this.image = image;
-        this.name = name;
-        this.description = description;
-    }
+        public image: string,
+        public name?: string,
+        public description?: string) {}
 
-    getInsertParameters(): {table: string, data: Array<[string, string]>} {
-        return getInsertParameters('"shop"."CarouselSlides"', this);
+    public readonly TABLE_NAME = 'shop."CarouselSlides"';
+
+    getInsertParameters(): Array<[string, string]> {
+        return getInsertParameters(this);
     }
 
     toFrontend(): {

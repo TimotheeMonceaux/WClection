@@ -4,6 +4,11 @@ import Log from '../models/common/log';
 const pool = new Pool();
 pool.connect();
 
+export interface IDbObject {
+    readonly TABLE_NAME: string
+    getInsertParameters(): Array<[string, string]>
+}
+
 export async function query(text: string, values: Array<string> = []): Promise<Array<any>> {
     const start = Date.now();
     const result = await pool.query(text, values);
@@ -25,16 +30,15 @@ export async function querySingle(text: string, values: Array<string>): Promise<
     return result.rows[0];
 }
 
-export async function insert(table: string, data: Array<[string, string]>): Promise<boolean> {
+export async function insert(obj: IDbObject): Promise<boolean> {
+    const params = obj.getInsertParameters();
     const start = Date.now();
-    const result = await pool.query(`INSERT INTO ${table} (${data.map(t => t[0]).join(', ')}) VALUES (${data.map((t, i) => `\$${i+1}`).join(', ')});`, data.map(t => t[1]));
+    const result = await pool.query(`INSERT INTO ${obj.TABLE_NAME} (${params.map(t => t[0]).join(', ')}) VALUES (${params.map((t, i) => `\$${i+1}`).join(', ')});`, params.map(t => t[1]));
     const duration = Date.now() - start;
-    console.log('[INFO] Query: ', {text: `INSERT INTO ${table}`, duration, rows: result.rowCount});
+    console.log('[INFO] Query: ', {text: `INSERT INTO ${obj.TABLE_NAME}`, duration, rows: result.rowCount});
     return result.rowCount === 1;
 }
 
 export async function log(type: string, user: string | undefined = undefined, result: string | undefined = undefined, extraParameters: any = undefined): Promise<boolean> {
-    const log = new Log(type, user, result, JSON.stringify(extraParameters));
-    const {table, data} = log.getInsertParameters();
-    return insert(table, data);
+    return insert(new Log(type, user, result, JSON.stringify(extraParameters)));
 }

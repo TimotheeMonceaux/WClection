@@ -1,33 +1,22 @@
+import { IDbObject } from "../../db";
+import { getInsertParameters } from "../../utils/db";
 import { filterNullValues } from "../../utils/object";
 
-export default class Product {
-    id: number;
-    name: string;
-    description: string | null | undefined;
-    basePrice: number;
-    price: number;
-    mainImage: string;
-    secondaryImage: string | null | undefined;
-    images: Array<string>;
-
+export default class Product implements IDbObject {
     constructor(
-        id: number,
-        name: string,
-        basePrice: number,
-        price: number,
-        mainImage: string,
-        description: string | null | undefined = undefined,
-        secondaryImage: string | null | undefined = undefined,
-        images: Array<string> | null | undefined = undefined
-    ) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.basePrice = basePrice;
-        this.price = price;
-        this.mainImage = mainImage;
-        this.secondaryImage = secondaryImage;
-        this.images = images ?? [];
+        public id: number,
+        public name: string,
+        public basePrice: number,
+        public price: number,
+        public mainImage: string,
+        public description?: string,
+        public secondaryImage?: string,
+        public images: Array<string> = []) {}
+
+    public readonly TABLE_NAME = 'shop."Products"';
+
+    getInsertParameters(): Array<[string, string]> {
+        return getInsertParameters(this);
     }
 
     toFrontend(): {

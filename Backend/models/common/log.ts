@@ -1,24 +1,16 @@
+import { IDbObject } from "../../db";
 import { getInsertParameters } from "../../utils/db";
 
-export default class Log {
-    type: string;
-    user: string | undefined;
-    result: string | undefined;
-    extraParameters: string | undefined;
-
+export default class Log implements IDbObject {
     constructor (
-        type: string,
-        user: string | undefined = undefined,
-        result: string | undefined = undefined,
-        extraParameters: string | undefined = undefined
-    ) {
-        this.type = type;
-        this.user = user;
-        this.result = result;
-        this.extraParameters = extraParameters;
-    }
+        public type: string,
+        public user?: string,
+        public result?: string,
+        public extraParameters?: string) {}
 
-    getInsertParameters(): {table: string, data: Array<[string, string]>} {
-        return getInsertParameters('"common"."Logs"', this);
+    public readonly TABLE_NAME = 'common."Logs"';
+
+    getInsertParameters(): Array<[string, string]> {
+        return getInsertParameters(this);
     }
 }

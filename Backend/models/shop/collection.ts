@@ -1,15 +1,16 @@
+import { IDbObject } from '../../db';
+import { getInsertParameters } from "../../utils/db";
 import Product from './product';
 
-export default class Collection {
-    name: string;
-    products: Array<Product>;
-
+export default class Collection implements IDbObject {
     constructor(
-        name: string,
-        products: Array<Product> = []
-    ) {
-        this.name = name;
-        this.products = products;
+        public name: string,
+        public products: Array<Product> = []) {}
+
+    public readonly TABLE_NAME = 'shop."Collections"';
+
+    getInsertParameters(): Array<[string, string]> {
+        return getInsertParameters(this);
     }
 
     toFrontend(): {
