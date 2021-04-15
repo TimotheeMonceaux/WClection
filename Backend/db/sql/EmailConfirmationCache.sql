@@ -1,5 +1,6 @@
 -- SEQUENCE: auth.EmailConfirmationCache_Id_seq
 
+-- DROP TABLE auth."EmailConfirmationCache";
 -- DROP SEQUENCE auth."EmailConfirmationCache_Id_seq";
 
 CREATE SEQUENCE auth."EmailConfirmationCache_Id_seq"
@@ -14,14 +15,13 @@ ALTER SEQUENCE auth."EmailConfirmationCache_Id_seq"
 
 -- Table: auth.EmailConfirmationCache
 
--- DROP TABLE auth."EmailConfirmationCache";
-
 CREATE TABLE auth."EmailConfirmationCache"
 (
     "Id" bigint NOT NULL DEFAULT nextval('auth."EmailConfirmationCache_Id_seq"'::regclass),
     "Email" character varying COLLATE pg_catalog."default" NOT NULL,
     "Key" character varying COLLATE pg_catalog."default" NOT NULL,
     "ValidUntil" timestamp with time zone NOT NULL,
+    "CreateDate" timestamp with time zone NOT NULL DEFAULT NOW(),
     CONSTRAINT "EmailConfirmationCache_pkey" PRIMARY KEY ("Id"),
     CONSTRAINT "EmailConfirmationCache_fkey_Users" FOREIGN KEY ("Email")
         REFERENCES auth."Users" ("Email") MATCH SIMPLE

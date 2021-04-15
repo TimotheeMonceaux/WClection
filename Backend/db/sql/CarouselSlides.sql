@@ -1,5 +1,6 @@
 -- SEQUENCE: shop.CarouselSlides_Id_seq
 
+-- DROP TABLE shop."CarouselSlides";
 -- DROP SEQUENCE shop."CarouselSlides_Id_seq";
 
 CREATE SEQUENCE shop."CarouselSlides_Id_seq"
@@ -14,7 +15,6 @@ ALTER SEQUENCE shop."CarouselSlides_Id_seq"
 
 -- Table: shop.CarouselSlides
 
--- DROP TABLE shop."CarouselSlides";
 
 CREATE TABLE shop."CarouselSlides"
 (

@@ -39,6 +39,12 @@ const userSignup = (email: string, password: string, newsletter: boolean): AppAc
                     })
                     .catch(error => dispatch({type: ActionTypes.SIGNUP_CONFIRM_EMAIL_ERROR, error: JSON.stringify(error)})));
 
+const resendSignupEmail = (email: string): AppAction =>
+    ((dispatch) => get(`/api/auth/resendEmail?email=${encodeURIComponent(email)}`)
+                    .then(response => response.json())
+                    .then(json => {if (!json.success) dispatch({type: ActionTypes.AUTH_ERROR, msg: json.msg})})
+                    .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})))
+
 const confirmEmail = (email: string, key: string): AppAction =>
     ((dispatch) => get(`/api/auth/confirmEmail?email=${encodeURIComponent(email)}&key=${encodeURIComponent(key)}`)
                     .then(response => response.json())
@@ -76,6 +82,7 @@ const actions = {
     setGlobalAppError,
     userLogin,
     userSignup,
+    resendSignupEmail,
     confirmEmail,
     removeAuthErrorMsg,
     userLogout,

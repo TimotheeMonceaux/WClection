@@ -6,6 +6,7 @@ export default class EmailConfirmationCache implements IDbObject {
         public email: string,
         public key: string,
         public validUntil: string,
+        public createDate?: string,
         public id?: number) {}
 
     public readonly TABLE_NAME = 'auth."EmailConfirmationCache"';

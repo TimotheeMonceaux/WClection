@@ -1,5 +1,6 @@
 -- SEQUENCE: shop.Collections_Id_seq
 
+-- DROP TABLE shop."Collections";
 -- DROP SEQUENCE shop."Collections_Id_seq";
 
 CREATE SEQUENCE shop."Collections_Id_seq"
@@ -14,7 +15,6 @@ ALTER SEQUENCE shop."Collections_Id_seq"
 
 -- Table: shop.Collections
 
--- DROP TABLE shop."Collections";
 
 CREATE TABLE shop."Collections"
 (

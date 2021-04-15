@@ -51,10 +51,10 @@ export async function signup(email: string, password: string, newsletter: boolea
     return {success: true, token: sign({userId: email}, process.env.JWTKEY, {expiresIn: '24h'})};
 }
 
-async function setupSignupConfirm(email: string) {
+export async function setupSignupConfirm(email: string) {
     const id = uuidv4();
-    insert(new EmailConfirmationCache(email, id, nowPlusMinutes(15).toISOString()));
-    sendMail(getConfirmEmailTemplate(email, id));
+    await insert(new EmailConfirmationCache(email, id, nowPlusMinutes(15).toISOString()));
+    await sendMail(getConfirmEmailTemplate(email, id));
 }
 
 export async function retrieveEmailConfirmationCache(email: string, key: string): Promise<EmailConfirmationCache | undefined> {
@@ -65,7 +65,18 @@ export async function retrieveEmailConfirmationCache(email: string, key: string)
     }
     
     log("RETRIEVE_EMAIL_CONFIRM", email, "Success");
-    return new EmailConfirmationCache(row.Email, row.Key, row.ValidUntil);
+    return new EmailConfirmationCache(row.Email, row.Key, row.ValidUntil, row.CreateDate);
+}
+
+export async function retrieveLastEmailConfirmationCache(email: string): Promise<EmailConfirmationCache | undefined> {
+    const row = await querySingle('SELECT * FROM auth."EmailConfirmationCache" WHERE "Email"=$1 ORDER BY "CreateDate" DESC LIMIT 1', [email.toLowerCase()]);
+    if (row === undefined) {
+        log("RETRIEVE_LAST_EMAIL_CONFIRM", email, "Error");
+        return undefined;
+    }
+    
+    log("RETRIEVE_LAST_EMAIL_CONFIRM", email, "Success");
+    return new EmailConfirmationCache(row.Email, row.Key, row.ValidUntil, row.CreateDate);
 }
 
 export async function confirmEmail(email: string, validUntil: string): Promise<{success: boolean, token?: string}> {

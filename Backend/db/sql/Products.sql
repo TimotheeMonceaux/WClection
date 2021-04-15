@@ -1,5 +1,6 @@
 -- SEQUENCE: shop.Products_Id_seq
 
+-- DROP TABLE shop."Products";
 -- DROP SEQUENCE shop."Products_Id_seq";
 
 CREATE SEQUENCE shop."Products_Id_seq"
@@ -13,8 +14,6 @@ ALTER SEQUENCE shop."Products_Id_seq"
     OWNER TO postgres;
 
 -- Table: shop.Products
-
--- DROP TABLE shop."Products";
 
 CREATE TABLE shop."Products"
 (

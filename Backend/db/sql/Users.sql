@@ -15,7 +15,6 @@ ALTER SEQUENCE auth."Users_Id_seq"
 
 -- Table: auth.Users
 
-
 CREATE TABLE auth."Users"
 (
     "Id" bigint NOT NULL DEFAULT nextval('auth."Users_Id_seq"'::regclass),

@@ -1,6 +1,6 @@
 import express from 'express';
 import { body, check, validationResult } from 'express-validator';
-import { confirmEmail, login, retrieveEmailConfirmationCache, retrieveUser, signup } from '../controllers/auth';
+import { confirmEmail, login, retrieveEmailConfirmationCache, retrieveLastEmailConfirmationCache, setupSignupConfirm, retrieveUser, signup } from '../controllers/auth';
 import User from '../models/auth/user';
 
 const authRouter = express.Router();
@@ -80,6 +80,28 @@ authRouter.get('/confirmEmail',
                 return res.status(401).json({success: false, msg: "Ce lien n'est plus valide."})
             }
             return res.status(200).json({success:true, token: st.token})
+        }
+        catch (e) {
+            console.error(e.stack);
+            return res.status(500).json("An unexpected error has occured.");
+        }
+    });
+
+authRouter.get('/resendEmail',
+    check('email').isEmail(),
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({success: false, msg: "Invalid request.", errors: errors.array()});
+        }
+
+        try {
+            const ecc = await retrieveLastEmailConfirmationCache(req.query!.email);
+            if (ecc !== undefined && (Date.now() - new Date(ecc.createDate!).getTime()) < 60000) {
+                return res.status(401).json({success: false, msg: "Veuillez attendre au moins une minute entre deux envois."});
+            }
+            await setupSignupConfirm(req.query!.email);
+            return res.status(200).json({success:true, msg: "Email envoyé !"})
         }
         catch (e) {
             console.error(e.stack);
