@@ -4,21 +4,23 @@ import { Redirect } from 'react-router';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
-import styled from 'styled-components';
 
 import Actions from '../../../redux/actions';
 import { AppDispatch, AppStore } from '../../../redux/action-types';
 import { isUserLoggedIn } from '../../../redux/selectors';
 
-const STextField = styled(TextField)`
-    @media (orientation: landscape) {
-        min-width: 30vw;
+const useStyles = makeStyles(() => ({
+    textField: {
+        '@media (orientation: landscape)': {
+            minWidth: '30vw'
+        },
+        '@media (orientation: portrait)': {
+            minWidth: '60vw'
+        }
     }
-    @media (orientation: portrait) {
-        min-width: 60vw;
-    }
-`;
+  }));
 
 function mapStoreToProps(store: AppStore) {
     return {
@@ -41,6 +43,7 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
     const [emailError, setEmailError] = useState(false);
     const [passwordValue, setPasswordValue] = useState("");
     const [passwordError, setPasswordError] = useState(false);
+    const classes = useStyles();
 
     if (props.isUserLoggedIn) {
         const sp = new URLSearchParams(window.location.search);
@@ -69,10 +72,10 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
     }
 
     return <form>
-    <STextField 
+    <TextField 
         label="Email" 
         variant="outlined" 
-        className="form-input" 
+        className={`form-input ${classes.textField}`} 
         error={emailError}
         margin="normal"
         autoFocus={true}
@@ -80,10 +83,10 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
         />
     {emailError && <Typography variant="body1" style={{color: "red"}}>Veuillez saisir une adresse email valide</Typography>}
     <br />
-    <STextField 
+    <TextField 
         label="Mot de passe"
         variant="outlined"
-        className="form-input"
+        className={`form-input ${classes.textField}`} 
         type="password"
         error={passwordError}
         margin="normal"

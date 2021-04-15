@@ -8,20 +8,22 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import CheckBox from '@material-ui/core/Checkbox';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import MuiAlert from '@material-ui/lab/Alert';
-import styled from 'styled-components';
+import { makeStyles} from '@material-ui/core/styles';
 
 import Actions from '../../../redux/actions';
 import { AppDispatch, AppStore } from '../../../redux/action-types';
 import { isUserLoggedIn } from '../../../redux/selectors';
 
-const STextField = styled(TextField)`
-    @media (orientation: landscape) {
-        min-width: 30vw;
+const useStyles = makeStyles(() => ({
+    textField: {
+        '@media (orientation: landscape)': {
+            minWidth: '30vw'
+        },
+        '@media (orientation: portrait)': {
+            minWidth: '60vw'
+        }
     }
-    @media (orientation: portrait) {
-        min-width: 60vw;
-    }
-`;
+  }));
 
 function mapStoreToProps(store: AppStore) {
     return {
@@ -48,6 +50,7 @@ function SignupForm(props: ConnectedProps<typeof connectSignupForm>) {
     const [repeatPasswordError, setRepeatPasswordError] = useState(false);
     const [cgvChecked, setCgvChecked] = useState(false);
     const [newsletterChecked, setNewsletterChecked] = useState(false);
+    const classes = useStyles();
 
     if (props.isUserLoggedIn) return <Redirect to="/signupSuccess" />
 
@@ -78,10 +81,10 @@ function SignupForm(props: ConnectedProps<typeof connectSignupForm>) {
     }
 
     return <form>
-    <STextField 
+    <TextField 
         label="Email" 
         variant="outlined"
-        className="form-input"
+        className={`form-input ${classes.textField}`} 
         margin="normal"
         error={emailError}
         autoFocus={true}
@@ -89,20 +92,20 @@ function SignupForm(props: ConnectedProps<typeof connectSignupForm>) {
         />
     {emailError && <Typography variant="body1" style={{color: "red"}}>Veuillez saisir une adresse email valide</Typography>}
     <br />
-    <STextField 
+    <TextField 
         label="Mot de passe"
         variant="outlined"
-        className="form-input"
+        className={`form-input ${classes.textField}`} 
         margin="normal"
         type="password"
         error={passwordError}
         onChange={(e) => handlePasswordChange(e.target.value)} />
     {passwordError && <Typography variant="body1" style={{color: "red"}}>Votre mot de passe doit faire au moins 8 caractères</Typography>}
     <br />
-    <STextField 
+    <TextField 
         label="Confirmer le mot de passe"
         variant="outlined"
-        className="form-input"
+        className={`form-input ${classes.textField}`} 
         margin="normal"
         type="password"
         error={repeatPasswordError}
