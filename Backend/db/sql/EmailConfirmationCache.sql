@@ -33,3 +33,5 @@ TABLESPACE pg_default;
 
 ALTER TABLE auth."EmailConfirmationCache"
     OWNER to postgres;
+
+CREATE INDEX ON auth."EmailConfirmationCache" ("Email", "Key");

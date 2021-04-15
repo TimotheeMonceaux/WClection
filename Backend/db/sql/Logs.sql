@@ -25,3 +25,5 @@ CREATE TABLE common."Logs"
 
 ALTER TABLE common."Logs"
     OWNER to postgres;
+
+CREATE INDEX ON common."Logs" ("User");

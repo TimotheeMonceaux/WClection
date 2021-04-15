@@ -32,3 +32,6 @@ TABLESPACE pg_default;
 
 ALTER TABLE auth."Users"
     OWNER to postgres;
+
+CREATE INDEX ON auth."Users" ("Email");
+CREATE INDEX ON auth."Users" ("LastName");
