@@ -71,7 +71,9 @@ function Product(props: ConnectedProps<typeof connectProduct> & {productId: numb
       </CardActions>
       <Route path={`/product/${props.productId}`}>
         <Modal open={true} onClose={() => history.push('/')}>
-          <div><ProductDetailsModal productId={props.productId} /></div>
+          <div> {/* This div serves as Modal anchor. The anchor cannot be a connected component such as ProductDetailsModal due to ref forwarding issues. Read more : https://stackoverflow.com/questions/56307332/how-to-use-custom-functional-components-within-material-ui-menu */}
+            <ProductDetailsModal productId={props.productId} />
+          </div>
         </Modal>
       </Route>
     </Card>
