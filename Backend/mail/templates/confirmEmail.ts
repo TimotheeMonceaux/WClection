@@ -3,7 +3,7 @@ import { EmailParameters } from "..";
 const SUBJECT = 'Bienvenue chez WClection ! 😀';
 
 function getValidationUrl(email: string, key: string): string {
-    return `http://wclection.com/confirmEmail?email=${email}&key=${key}`;
+    return `http://wclection.com/confirmEmail?email=${encodeURIComponent(email)}&key=${encodeURIComponent(key)}`;
 }
 
 function getText(email: string, key: string) {

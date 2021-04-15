@@ -16,6 +16,7 @@ import AppCarousel from './carousel/Carousel';
 import Collections from './products/Collections';
 import Footer from './footer/Footer';
 import SignupConfirm from './auth/signup/SignupConfirm';
+import SignupSuccess from './auth/signup/SignupSuccess';
 
 const useStyles = makeStyles((theme) => ({
   errorModal: {
@@ -65,8 +66,8 @@ function App(props: ConnectedProps<typeof connectApp>) {
           {!props.isUserLoggedIn && <Redirect to="/login?callback=%2Fcheckout" />}
           <Typography variant="h3" style={{position: 'absolute', top: '25vh', left: '25vw'}}>Rends l'argent, Victor !</Typography>
         </Route>
-        <Route path="/signupConfirm">
-          <Typography variant="h3" style={{position: 'absolute', top: '25vh', left: '15vw', width: '70vw'}}>Merci de votre inscription, un email de confirmation vous a été envoyé. Lol non je déconne je suis juste un texte statique je peux pas envoyer de mails encore xptdr</Typography>
+        <Route path="/signupSuccess">
+          <SignupSuccess />
         </Route>
         <Route path="/confirmEmail">
           <SignupConfirm />
@@ -76,9 +77,9 @@ function App(props: ConnectedProps<typeof connectApp>) {
             <AppCarousel />
             <Collections />
           </Container>
-          <Footer />
         </Route>
       </Switch>
+      <Footer />
     </Router>
   );
 }

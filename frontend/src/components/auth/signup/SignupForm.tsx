@@ -49,7 +49,7 @@ function SignupForm(props: ConnectedProps<typeof connectSignupForm>) {
     const [cgvChecked, setCgvChecked] = useState(false);
     const [newsletterChecked, setNewsletterChecked] = useState(false);
 
-    if (props.isUserLoggedIn) return <Redirect to="/signupconfirm" />
+    if (props.isUserLoggedIn) return <Redirect to="/signupSuccess" />
 
 
     function isEmail(s:string): boolean {
