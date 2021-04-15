@@ -53,8 +53,9 @@ export async function signup(email: string, password: string, newsletter: boolea
 
 export async function setupSignupConfirm(email: string) {
     const id = uuidv4();
-    await insert(new EmailConfirmationCache(email, id, nowPlusMinutes(15).toISOString()));
-    await sendMail(getConfirmEmailTemplate(email, id));
+    const p1 = insert(new EmailConfirmationCache(email, id, nowPlusMinutes(15).toISOString()));
+    const p2 = sendMail(getConfirmEmailTemplate(email, id));
+    await Promise.all([p1, p2]);
 }
 
 export async function retrieveEmailConfirmationCache(email: string, key: string): Promise<EmailConfirmationCache | undefined> {
