@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,8 +14,6 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 import { AppStore, AppDispatch } from '../../../redux/action-types';
 import Actions from '../../../redux/actions';
-
-const urlParams = new URLSearchParams(window.location.search);
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -49,7 +47,6 @@ const useStyles = makeStyles((theme) => ({
 function mapStoreToProps(store: AppStore) {
     return {
         email: store.userProfile.email,
-        confirmEmailStatus: store.confirmEmailStatus,
         authErrorMsg: store.authErrorMsg
     }
 }
@@ -65,8 +62,6 @@ function mapDispatchToProps(dispatch: AppDispatch) {
 const connectSignupSuccess = connect(mapStoreToProps, mapDispatchToProps);
 
 function SignupSuccess(props: ConnectedProps<typeof connectSignupSuccess>) {
-    const confirmEmail = props.confirmEmail;
-    useEffect(() => {confirmEmail(urlParams.get('email') ?? '', urlParams.get('key') ?? '')}, [confirmEmail])
     const classes = useStyles();
     const history = useHistory();
     const [resendButtonClicked, setResendButtonClicked] = useState(false);
