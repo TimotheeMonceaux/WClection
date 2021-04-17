@@ -7,6 +7,7 @@ const useStyles = makeStyles(theme => ({
         backgroundColor: theme.palette.primary.main, 
         color: theme.palette.common.white,
         height: 100,
+        width: 'inherit',
         marginTop: theme.spacing(5),
         paddingBottom: theme.spacing(7.5),
         display: "flex",

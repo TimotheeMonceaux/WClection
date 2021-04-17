@@ -10,8 +10,10 @@ import LoginForm from "./LoginForm";
 
 const useStyles = makeStyles(() => ({
     root: {
+      display: 'flex',
+      flexDirection: 'column',
       flexGrow: 1,
-      marginTop: 200,
+      justifyContent: 'center'
     },
     paper: {
       padding: 25

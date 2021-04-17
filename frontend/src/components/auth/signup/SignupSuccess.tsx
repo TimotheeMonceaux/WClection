@@ -17,9 +17,10 @@ import Actions from '../../../redux/actions';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        marginTop: 100,
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        flexGrow: 1,
+        justifyContent: 'center'
     },
     paper: {
         padding: theme.spacing(5)

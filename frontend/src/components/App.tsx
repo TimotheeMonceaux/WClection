@@ -18,8 +18,19 @@ import Collections from './products/Collections';
 import Footer from './footer/Footer';
 import SignupConfirm from './auth/signup/SignupConfirm';
 import SignupSuccess from './auth/signup/SignupSuccess';
+import { Grid } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
+  body: {
+    paddingTop: 75,
+    minHeight: 'calc(100vh - 75px)',
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  footer: {
+    marginTop: 'auto',
+    width: '100%'
+  },
   errorModal: {
     position: 'absolute',
     top: '20vh',
@@ -64,31 +75,35 @@ function App(props: ConnectedProps<typeof connectApp>) {
         </Paper>
       </Modal>
       <HeaderBar />
-      <Switch>
-        <Route path="/login">
-          <LoginPage />
-        </Route>
-        <Route path="/signup">
-          <SignupPage />
-        </Route>
-        <Route path="/checkout">
-          {!props.isUserLoggedIn && <Redirect to="/login?callback=%2Fcheckout" />}
-          <Typography variant="h3" style={{position: 'absolute', top: '25vh', left: '25vw'}}>Rends l'argent, Victor !</Typography>
-        </Route>
-        <Route path="/signupSuccess">
-          <SignupSuccess />
-        </Route>
-        <Route path="/confirmEmail">
-          <SignupConfirm />
-        </Route>
-        <Route path="/">
-          <Container fixed style={{marginTop: 75}}>
-            <AppCarousel />
-            <Collections />
-          </Container>
-        </Route>
-      </Switch>
-      <Footer />
+      <div className={classes.body}>
+        <Switch>
+          <Route path="/login">
+            <LoginPage />
+          </Route>
+          <Route path="/signup">
+            <SignupPage />
+          </Route>
+          <Route path="/checkout">
+            {!props.isUserLoggedIn && <Redirect to="/login?callback=%2Fcheckout" />}
+            <Typography variant="h3" style={{position: 'absolute', top: '25vh', left: '25vw'}}>Rends l'argent, Victor !</Typography>
+          </Route>
+          <Route path="/signupSuccess">
+            <SignupSuccess />
+          </Route>
+          <Route path="/confirmEmail">
+            <SignupConfirm />
+          </Route>
+          <Route path="/">
+            <Container fixed>
+              <AppCarousel />
+              <Collections />
+            </Container>
+          </Route>
+        </Switch>
+        <Grid container className={classes.footer}>
+          <Footer />
+        </Grid>
+      </div>
     </Router>
   );
 }
