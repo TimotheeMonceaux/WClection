@@ -1,16 +1,20 @@
 import { AnyAction } from 'redux';
 import ActionTypes, { AppAction } from './action-types';
 
-const serverUrl = "http://wclection.com";
+const serverUrl = window.location.hostname === "localhost" ? "http://localhost:8000" : "http://wclection.com";
 
 function get(endpoint: string): Promise<Response> {
-    return fetch(serverUrl + endpoint);
+    return fetch(serverUrl + endpoint, {
+        method: 'GET',
+        credentials: 'include'
+    });
 }
 
 function post(endpoint: string, body: object): Promise<Response> {
     return fetch(serverUrl + endpoint, 
         {
             method: 'POST', 
+            credentials: 'include',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
@@ -20,6 +24,12 @@ function post(endpoint: string, body: object): Promise<Response> {
 }
 
 const setGlobalAppError = (error: string): AnyAction => ({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: error});
+
+const getSession = (): AppAction =>
+    ((dispatch) => get('/api/auth/session')
+                    .then(response => response.json())
+                    .then(json => {if (json.success) dispatch({type: ActionTypes.SESSION_RETRIEVED, ...json})})
+                    .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
 
 const userLogin = (email: string, password: string): AppAction => 
     ((dispatch) => post("/api/auth/login", {email, password})
@@ -40,22 +50,25 @@ const userSignup = (email: string, password: string, newsletter: boolean): AppAc
                     .catch(error => dispatch({type: ActionTypes.SIGNUP_CONFIRM_EMAIL_ERROR, error: JSON.stringify(error)})));
 
 const resendSignupEmail = (email: string): AppAction =>
-    ((dispatch) => get(`/api/auth/resendEmail?email=${encodeURIComponent(email)}`)
+    ((dispatch) => post('/api/auth/resendEmail', {email})
                     .then(response => response.json())
                     .then(json => {if (!json.success) dispatch({type: ActionTypes.AUTH_ERROR, msg: json.msg})})
                     .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})))
 
 const confirmEmail = (email: string, key: string): AppAction =>
-    ((dispatch) => get(`/api/auth/confirmEmail?email=${encodeURIComponent(email)}&key=${encodeURIComponent(key)}`)
+    ((dispatch) => post('/api/auth/confirmEmail', {email, key})
                     .then(response => response.json())
                     .then(json => {
-                        if (json.success) dispatch({type: ActionTypes.SIGNUP_CONFIRM_EMAIL_SUCCESS, ...json});
+                        if (json.success) dispatch({type: ActionTypes.SIGNUP_CONFIRM_EMAIL_SUCCESS});
                         else dispatch({type: ActionTypes.SIGNUP_CONFIRM_EMAIL_ERROR, msg: json.msg});
                     })
                     .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
 
 const removeAuthErrorMsg = (): AnyAction => ({type: ActionTypes.REMOVE_AUTH_ERROR_MSG});
-const userLogout = (): AnyAction => ({type: ActionTypes.LOGOUT});
+const userLogout = (): AppAction =>
+    ((dispatch) => post('/api/auth/logout', {})
+                    .then(() => dispatch({type: ActionTypes.LOGOUT}))
+                    .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
 
 const loadCarouselSlides = (): AppAction =>
     ((dispatch) => get("/api/carousel")
@@ -80,6 +93,7 @@ const removeFromCart = (productId: number): AnyAction => ({type: ActionTypes.REM
 
 const actions = {
     setGlobalAppError,
+    getSession,
     userLogin,
     userSignup,
     resendSignupEmail,

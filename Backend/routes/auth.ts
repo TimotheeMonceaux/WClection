@@ -1,9 +1,20 @@
 import express from 'express';
-import { body, check, validationResult } from 'express-validator';
+import { body, validationResult } from 'express-validator';
+
 import { confirmEmail, login, retrieveEmailConfirmationCache, retrieveLastEmailConfirmationCache, setupSignupConfirm, retrieveUser, signup } from '../controllers/auth';
+import { log } from '../db';
 import User from '../models/auth/user';
 
 const authRouter = express.Router();
+
+authRouter.get('/session', (req, res) => {
+    if (req.session.user === undefined) {
+        log('SESSION', undefined, 'Error');
+        return res.status(200).json({success: false});
+    }
+    log('SESSION', req.session.user.email, 'Success');
+    return res.status(200).json({success: true, user: req.session.user});
+});
 
 authRouter.post('/login',
     body('email').isEmail(),
@@ -20,11 +31,11 @@ authRouter.post('/login',
                 return res.status(401).json({success: false, msg: "Email inconnu"});
             }
     
-            const st = await login(usr!, req.body.password);
-            if (!st.success) {
+            const st = await login(usr!, req.body.password, req.session);
+            if (!st) {
                 return res.status(401).json({success: false, msg: "Mot de passe incorrect"});
             }
-            return res.status(200).json({success: true, token: st.token, user: usr!.toFrontend()});
+            return res.status(200).json({success: true, user: usr!.toFrontend()});
         } 
         catch (e) {
             console.error(e.stack);
@@ -48,11 +59,11 @@ authRouter.post('/signup',
                 return res.status(401).json({success: false, msg: "Cet email est déjà utilisé"});
             }
 
-            const st = await signup(req.body.email, req.body.password, req.body.newsletter);
-            if (!st.success) {
+            const st = await signup(req.body.email, req.body.password, req.body.newsletter, req.session);
+            if (!st) {
                 return res.status(500).json({success: false, msg: "Internal server error"});
             }
-            return res.status(200).json({success:true, token: st.token, user: new User(req.body.email, '').toFrontend()});
+            return res.status(200).json({success:true, user: new User(req.body.email, '').toFrontend()});
         }
         catch (e) {
             console.error(e.stack);
@@ -60,9 +71,9 @@ authRouter.post('/signup',
         }
     });
 
-authRouter.get('/confirmEmail',
-    check('email').isEmail(),
-    check('key').isUUID(),
+authRouter.post('/confirmEmail',
+    body('email').isEmail(),
+    body('key').isUUID(),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -75,11 +86,11 @@ authRouter.get('/confirmEmail',
                 return res.status(401).json({success: false, msg: "Ce lien n'est pas valide."});
             }
 
-            const st = await confirmEmail(ecc.email, ecc.validUntil);
-            if (!st.success) {
+            const st = await confirmEmail(ecc.email, ecc.validUntil, req.session);
+            if (!st) {
                 return res.status(401).json({success: false, msg: "Ce lien n'est plus valide."})
             }
-            return res.status(200).json({success:true, token: st.token})
+            return res.status(200).json({success:true})
         }
         catch (e) {
             console.error(e.stack);
@@ -87,8 +98,8 @@ authRouter.get('/confirmEmail',
         }
     });
 
-authRouter.get('/resendEmail',
-    check('email').isEmail(),
+authRouter.post('/resendEmail',
+    body('email').isEmail(),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -108,5 +119,12 @@ authRouter.get('/resendEmail',
             return res.status(500).json("An unexpected error has occured.");
         }
     });
+
+authRouter.post('/logout', (req, res) => {
+    log('LOGOUT', req.session.user.email, 'Success');
+    req.session.user = undefined;
+    req.session.updateDate = new Date();
+    return res.status(200).json({success: true});
+});
 
 export default authRouter;

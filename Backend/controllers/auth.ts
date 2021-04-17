@@ -1,4 +1,3 @@
-import { sign } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4} from 'uuid';
 
@@ -10,6 +9,15 @@ import EmailConfirmationCache from '../models/auth/emailConfirmationCache';
 import { nowPlusMinutes } from '../utils/date';
 import getConfirmEmailTemplate from '../mail/templates/confirmEmail';
 
+function updateSession(session: Express.session.Session, user: User) {
+    if (session.user === undefined) session.user = new User(user.email, '');
+    session.user.confirmed = user.confirmed ?? session.user.confirmed;
+    session.user.firstName = user.firstName ?? session.user.firstName;
+    session.user.middleName = user.middleName ?? session.user.middleName;
+    session.user.lastName = user.lastName ?? session.user.lastName;
+    session.updateDate = new Date();
+}
+
 export async function retrieveUser(email: string): Promise<User | undefined> {
     const row = await querySingle('SELECT * FROM "auth"."Users" WHERE "Email"=$1', [email.toLowerCase()]);
     if (row === undefined) {
@@ -20,35 +28,32 @@ export async function retrieveUser(email: string): Promise<User | undefined> {
     return new User(row.Email, row.PasswordHash, row.Newsletter, row.Id, row.FirstName, row.MiddleName, row.LastName);
 }
 
-declare var process : {
-    env: {
-        JWTKEY: string
-    }
-}
-
-export async function login(user: User, password: string): Promise<{success: boolean, token?: string}> {
+export async function login(user: User, password: string, session: Express.session.Session): Promise<boolean> {
     const valid = await bcrypt.compare(password, user.passwordHash);
     if (!valid) {
         log("LOGIN", user.email, "Error");
-        return {success: false};
+        return false;
     }
 
+    updateSession(session, user);
     log("LOGIN", user.email, "Success");
-    return {success: true, token: sign({userId: user.email}, process.env.JWTKEY, {expiresIn: '24h'})};
+    return true;
 }
 
-export async function signup(email: string, password: string, newsletter: boolean): Promise<{success: boolean, token?: string}> {
+export async function signup(email: string, password: string, newsletter: boolean, session: Express.session.Session): Promise<boolean> {
     const passwordHash = await hashPassword(password);
-    const success = await insert(new User(email.toLowerCase(), passwordHash, false, newsletter));
+    const user = new User(email.toLowerCase(), passwordHash, false, newsletter);
+    const success = await insert(user);
 
     if (!success) {
         log("SIGNUP", email, "Error");
-        return {success: false}
+        return false
     };
     
     setupSignupConfirm(email);
+    updateSession(session, user);
     log("SIGNUP", email, "Success");
-    return {success: true, token: sign({userId: email}, process.env.JWTKEY, {expiresIn: '24h'})};
+    return true;
 }
 
 export async function setupSignupConfirm(email: string) {
@@ -80,18 +85,19 @@ export async function retrieveLastEmailConfirmationCache(email: string): Promise
     return new EmailConfirmationCache(row.Email, row.Key, row.ValidUntil, row.CreateDate);
 }
 
-export async function confirmEmail(email: string, validUntil: string): Promise<{success: boolean, token?: string}> {
+export async function confirmEmail(email: string, validUntil: string, session: Express.session.Session): Promise<boolean> {
     if (Date.now() > new Date(validUntil).getTime()) {
         log("CONFIRM_EMAIL", email, "Error", {validUntil});
-        return {success: false};
+        return false;
     }
 
     const success = await update('auth."Users"' , [['"Email"', email]], [['"Confirmed"', '1']]);
     if (!success) {
         log("CONFIRM_EMAIL", email, "Error", {msg: "Update fail"});
-        return {success: false};
+        return false;
     }
 
+    updateSession(session, new User(email, '', true));
     log("CONFIRM_EMAIL", email, "Success", {validUntil});
-    return {success: true, token: sign({userId: email}, process.env.JWTKEY, {expiresIn: '24h'})}
+    return true
 }

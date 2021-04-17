@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { connect, ConnectedProps } from 'react-redux';
 import Container from '@material-ui/core/Container';
@@ -10,7 +10,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import HeaderBar from './headerbar/Headerbar';
 import LoginPage from './auth/login/LoginPage';
 import SignupPage from './auth/signup/SignupPage';
-import { AppStore } from '../redux/action-types';
+import { AppStore, AppDispatch } from '../redux/action-types';
+import Actions from '../redux/actions';
 import { isUserLoggedIn } from '../redux/selectors';
 import AppCarousel from './carousel/Carousel';
 import Collections from './products/Collections';
@@ -39,10 +40,18 @@ function mapStoreToProps(store: AppStore) {
   }
 }
 
-const connectApp = connect(mapStoreToProps);
+function mapDispatchToProps(dispatch: AppDispatch) {
+  return {
+    getSession: () => {dispatch(Actions.getSession())}
+  }
+}
+
+const connectApp = connect(mapStoreToProps, mapDispatchToProps);
 
 
 function App(props: ConnectedProps<typeof connectApp>) {
+  const getSession = props.getSession;
+  useEffect(() => {getSession()}, [getSession]);
   const [openModal, setOpenModal] = useState(props.globalAppError !== '');
   const classes = useStyles();
 
