@@ -23,7 +23,7 @@ const authErrorMsg = (authErrorMsg = '', action: AnyAction): string => {
 
 const defaultUserProfile = {email: '', firstName: '', middleName: '', lastName: ''};
 const userProfile = (userProfile: UserProfile = defaultUserProfile, action: AnyAction): UserProfile => {
-    if (action.type === ActionTypes.LOGIN_SUCCESS || action.type === ActionTypes.SIGNUP_SUCCESS || action.type === ActionTypes.SESSION_RETRIEVED)
+    if (action.type === ActionTypes.LOGIN_SUCCESS || action.type === ActionTypes.SIGNUP_SUCCESS || action.type === ActionTypes.SESSION_RETRIEVED || action.type === ActionTypes.SIGNUP_CONFIRM_EMAIL_ERROR)
         return {
             email: action.user.email,
             firstName: action.user.firstName,

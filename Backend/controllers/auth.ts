@@ -85,19 +85,20 @@ export async function retrieveLastEmailConfirmationCache(email: string): Promise
     return new EmailConfirmationCache(row.Email, row.Key, row.ValidUntil, row.CreateDate);
 }
 
-export async function confirmEmail(email: string, validUntil: string, session: Express.session.Session): Promise<boolean> {
+export async function confirmEmail(email: string, validUntil: string, session: Express.session.Session): Promise<{success: boolean, user?: User}> {
     if (Date.now() > new Date(validUntil).getTime()) {
         log("CONFIRM_EMAIL", email, "Error", {validUntil});
-        return false;
+        return {success:  false};
     }
 
     const success = await update('auth."Users"' , [['"Email"', email]], [['"Confirmed"', '1']]);
     if (!success) {
         log("CONFIRM_EMAIL", email, "Error", {msg: "Update fail"});
-        return false;
+        return {success: false};
     }
 
-    updateSession(session, new User(email, '', true));
+    const user = new User(email, '', true);
+    updateSession(session, user);
     log("CONFIRM_EMAIL", email, "Success", {validUntil});
-    return true
+    return {success: true, user}
 }

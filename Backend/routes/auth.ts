@@ -87,10 +87,10 @@ authRouter.post('/confirmEmail',
             }
 
             const st = await confirmEmail(ecc.email, ecc.validUntil, req.session);
-            if (!st) {
+            if (!st.success) {
                 return res.status(401).json({success: false, msg: "Ce lien n'est plus valide."})
             }
-            return res.status(200).json({success:true})
+            return res.status(200).json(st);
         }
         catch (e) {
             console.error(e.stack);
