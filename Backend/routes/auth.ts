@@ -81,7 +81,7 @@ authRouter.post('/confirmEmail',
         }
 
         try {
-            const ecc = await retrieveEmailConfirmationCache(req.query!.email, req.query!.key);
+            const ecc = await retrieveEmailConfirmationCache(req.body.email, req.body.key);
             if (ecc === undefined) {
                 return res.status(401).json({success: false, msg: "Ce lien n'est pas valide."});
             }
@@ -107,11 +107,11 @@ authRouter.post('/resendEmail',
         }
 
         try {
-            const ecc = await retrieveLastEmailConfirmationCache(req.query!.email);
+            const ecc = await retrieveLastEmailConfirmationCache(req.body.email);
             if (ecc !== undefined && (Date.now() - new Date(ecc.createDate!).getTime()) < 60000) {
                 return res.status(401).json({success: false, msg: "Veuillez attendre au moins une minute entre deux envois."});
             }
-            await setupSignupConfirm(req.query!.email);
+            await setupSignupConfirm(req.body.email);
             return res.status(200).json({success:true, msg: "Email envoyé !"})
         }
         catch (e) {
