@@ -29,7 +29,9 @@ declare global {
     class Session {
       user?: User;
       updateDate?: Date;
+      
     }
+    interface SessionData {}
   }
 }
 app.use(session({

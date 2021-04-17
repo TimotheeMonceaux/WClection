@@ -121,7 +121,7 @@ authRouter.post('/resendEmail',
     });
 
 authRouter.post('/logout', (req, res) => {
-    log('LOGOUT', req.session.user.email, 'Success');
+    log('LOGOUT', req.session.user?.email, 'Success');
     req.session.user = undefined;
     req.session.updateDate = new Date();
     return res.status(200).json({success: true});
