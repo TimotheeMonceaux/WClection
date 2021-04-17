@@ -96,11 +96,12 @@ function HeaderBar(props: ConnectedProps<typeof connectHeaderBar>) {
               </div>
           </Menu>
           {/* The following Fragment represents the user card. It CANNOT be separated into an individual component due to Menu Popover limitations. */}
-          {!props.isUserLoggedIn && <Fragment><LoginButton /><SignupButton /></Fragment>}
-          {props.isUserLoggedIn && <Fragment>
-            <IconButton color="inherit" onClick={handleUsercardMenu} style={{fontSize: "120%"}}>
-                <AccountCircle style={{marginRight: 10}} /> {props.getUserName}
-            </IconButton>
+         <Fragment>
+            {!props.isUserLoggedIn && <Fragment><LoginButton /><SignupButton /></Fragment>}
+            {props.isUserLoggedIn && <IconButton color="inherit" onClick={handleUsercardMenu} style={{fontSize: "120%"}}>
+                 <AccountCircle style={{marginRight: 10}} /> {props.getUserName}
+            </IconButton>}
+            {/* The menu popover needs to be mounted at the very first render, otherwise it will popup anywhere at first mount, hence the weird conditional logic here*/}
             <Menu
                 anchorEl={usercardAnchor}
                 keepMounted
@@ -109,9 +110,9 @@ function HeaderBar(props: ConnectedProps<typeof connectHeaderBar>) {
                 anchorOrigin={{vertical: "bottom", horizontal: "center"}}
                 transformOrigin={{vertical: "top", horizontal: "center"}}
                 onClose={handleUsercardClose}>
-                <MenuItem onClick={props.logout}><PowerSettingsNew style={{marginRight: 10}} /> Déconnexion</MenuItem>
+                {props.isUserLoggedIn && <MenuItem onClick={() => {handleUsercardClose(); props.logout();}}><PowerSettingsNew style={{marginRight: 10}} /> Déconnexion</MenuItem>}
             </Menu>
-        </Fragment>}
+        </Fragment>
         </Toolbar>
       </AppBar>
     </div>
