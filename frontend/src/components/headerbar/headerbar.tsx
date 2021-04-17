@@ -20,6 +20,7 @@ import { getCartSize, getCartItems, getCartValue, getUserName, isUserLoggedIn } 
 import CartMenuItem from './CartMenuItem';
 import LoginButton from '../auth/login/LoginButton';
 import SignupButton from '../auth/signup/SignupButton';
+import { Avatar } from '@material-ui/core';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -33,6 +34,11 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     cursor: "pointer"
   },
+  small: {
+    width: theme.spacing(3),
+    height: theme.spacing(3),
+    marginRight: theme.spacing(1)
+  }
 }));
 
 function mapStoreToProps(store: AppStore) {
@@ -69,7 +75,7 @@ function HeaderBar(props: ConnectedProps<typeof connectHeaderBar>) {
   return (
     <div className={classes.root}>
       <AppBar position="fixed">
-        <Toolbar>
+        <Toolbar><Avatar src="/favicon-32x32.png" alt="WClection" variant="square" className={classes.small }/> 
           <Typography variant="h6" className={classes.title} onClick={() => history.push('/')}>
             WClection
           </Typography>
