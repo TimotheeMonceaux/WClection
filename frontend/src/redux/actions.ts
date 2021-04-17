@@ -59,7 +59,7 @@ const confirmEmail = (email: string, key: string): AppAction =>
     ((dispatch) => post('/api/auth/confirmEmail', {email, key})
                     .then(response => response.json())
                     .then(json => {
-                        if (json.success) dispatch({type: ActionTypes.SIGNUP_CONFIRM_EMAIL_SUCCESS});
+                        if (json.success) dispatch({type: ActionTypes.SIGNUP_CONFIRM_EMAIL_SUCCESS, ...json});
                         else dispatch({type: ActionTypes.SIGNUP_CONFIRM_EMAIL_ERROR, msg: json.msg});
                     })
                     .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
