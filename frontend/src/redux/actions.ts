@@ -50,10 +50,10 @@ const userSignup = (email: string, password: string, newsletter: boolean): AppAc
                     .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
 
 const resendSignupEmail = (email: string): AppAction =>
-    ((dispatch) => post('/api/auth/resendEmail', {email})
+    ((dispatch) => post('/api/auth/resendConfirmEmail', {email})
                     .then(response => response.json())
                     .then(json => {if (!json.success) dispatch({type: ActionTypes.AUTH_ERROR, msg: json.msg})})
-                    .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})))
+                    .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
 
 const confirmEmail = (email: string, key: string): AppAction =>
     ((dispatch) => post('/api/auth/confirmEmail', {email, key})
@@ -61,6 +61,30 @@ const confirmEmail = (email: string, key: string): AppAction =>
                     .then(json => {
                         if (json.success) dispatch({type: ActionTypes.SIGNUP_CONFIRM_EMAIL_SUCCESS, ...json});
                         else dispatch({type: ActionTypes.SIGNUP_CONFIRM_EMAIL_ERROR, msg: json.msg});
+                    })
+                    .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
+
+const forgotPassword = (email: string): AppAction => 
+    ((dispatch) => post("/api/auth/forgotPassword", {email})
+                    .then(response => response.json())
+                    .then(json => {
+                        if (json.success) dispatch({type: ActionTypes.FORGOT_PASSWORD_SUCCESS, email});
+                        else dispatch({type: ActionTypes.AUTH_ERROR, msg: json.msg});
+                    })
+                    .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));;
+
+const resendForgotPassword = (email: string): AppAction =>
+    ((dispatch) => post('/api/auth/resendForgotPassword', {email})
+                    .then(response => response.json())
+                    .then(json => {if (!json.success) dispatch({type: ActionTypes.AUTH_ERROR, msg: json.msg})})
+                    .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
+
+const resetPassword = (email: string, password: string, key: string): AppAction =>
+    ((dispatch) => post('/api/auth/resetPassword', {email, password, key})
+                    .then(response => response.json())
+                    .then(json => {
+                        if (json.success) dispatch({type: ActionTypes.RESET_PASSWORD_SUCCESS, ...json});
+                        else dispatch({type: ActionTypes.RESET_PASSWORD_ERROR, msg: json.msg});
                     })
                     .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
 
@@ -98,6 +122,9 @@ const actions = {
     userSignup,
     resendSignupEmail,
     confirmEmail,
+    forgotPassword,
+    resendForgotPassword,
+    resetPassword,
     removeAuthErrorMsg,
     userLogout,
     loadCarouselSlides,

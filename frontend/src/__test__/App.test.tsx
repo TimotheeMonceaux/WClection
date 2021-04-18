@@ -4,6 +4,6 @@ import App from '../components/App';
 
 test('renders Hello, World!', () => {
   render(<App />);
-  const linkElement = screen.getByText("Hello, World!");
+  const linkElement = screen.getByText("WClection");
   expect(linkElement).toBeInTheDocument();
 });

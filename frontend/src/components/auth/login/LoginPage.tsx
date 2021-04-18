@@ -32,6 +32,7 @@ export default function LoginPage() {
                 textColor="primary">
                 <Tab label="Connexion" />
                 <Tab label="Inscription" onClick={() => history.push("/signup")}/>
+                <Tab label="Mot de Passe oublié" onClick={() => history.push("/forgotPassword")}/>
             </Tabs>
             <LoginForm />
         </Paper>

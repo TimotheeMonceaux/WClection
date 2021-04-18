@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
@@ -14,6 +14,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 
 import { AppStore, AppDispatch } from '../../../redux/action-types';
 import Actions from '../../../redux/actions';
+import { isUserLoggedIn } from '../../../redux/selectors';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -47,21 +48,22 @@ const useStyles = makeStyles((theme) => ({
 
 function mapStoreToProps(store: AppStore) {
     return {
-        email: store.userProfile.email,
+        isUserLoggedIn: isUserLoggedIn(store),
+        forgotPasswordEmail: store.forgotPasswordEmail,
         authErrorMsg: store.authErrorMsg
     }
 }
 
 function mapDispatchToProps(dispatch: AppDispatch) {
     return {
-        resendSignupEmail : (email: string) => {dispatch(Actions.resendSignupEmail(email))},
+        resendForgotPassword : (email: string) => {dispatch(Actions.resendForgotPassword(email))},
         removeAuthErrorMsg: () => {dispatch(Actions.removeAuthErrorMsg)}
     }
 }
 
-const connectSignupSuccess = connect(mapStoreToProps, mapDispatchToProps);
+const connectForgotPasswordSuccess = connect(mapStoreToProps, mapDispatchToProps);
 
-function SignupSuccess(props: ConnectedProps<typeof connectSignupSuccess>) {
+function ForgotPasswordSuccess(props: ConnectedProps<typeof connectForgotPasswordSuccess>) {
     const classes = useStyles();
     const history = useHistory();
     const [resendButtonClicked, setResendButtonClicked] = useState(false);
@@ -71,16 +73,19 @@ function SignupSuccess(props: ConnectedProps<typeof connectSignupSuccess>) {
         setTimeout(() => setResendButtonClicked(false), 60000);
     }
 
+    if (props.isUserLoggedIn) return <Redirect to="/" />;
+    if (props.forgotPasswordEmail === '') return <Redirect to="/forgotPassword" />;
+
     return <Container fixed className={classes.root}>
         <Paper square className={classes.paper}>
             <Grid container className={classes.body}>
                 <Grid className={`${classes.center} ${classes.primary} ${classes.line}`}>
                     <Typography variant="h4">
                         <CheckCircleOutline fontSize="inherit" style={{position: 'relative', top: '5px'}} className={classes.icon} />
-                            Votre inscription est confirmée !
+                            Votre demande a bien été prise en compte !
                     </Typography>
                 </Grid>
-                <Typography variant="body1" className={classes.line}>Nous vous remercions de votre confiance. Avant de pouvoir continuer, nous vous remercions de bien vouloir confirmer votre compte en cliquant sur le lien qui vous a été envoyé par email. Attention, le lien n'est valable que 15 minutes.</Typography>
+                <Typography variant="body1" className={classes.line}>Nous venons de vous envoyer un email contenant un lien vous permettant de réinitialiser votre mot de passe. Attention, ce lien n'est valable que 15 minutes.</Typography>
                 <Typography variant="body2" className={classes.line}>Si vous n'avez pas reçu d'email de notre part d'ici 5 minutes, pensez à vérifier votre dossier de courrier indésirable ou de publicités.</Typography>
                 {props.authErrorMsg && <MuiAlert elevation={6} 
                                          variant="filled" 
@@ -94,7 +99,7 @@ function SignupSuccess(props: ConnectedProps<typeof connectSignupSuccess>) {
                          variant={(resendButtonClicked ? undefined : "contained")} 
                          disabled={resendButtonClicked} 
                          style={{marginRight: '2rem'}} 
-                         onClick={() => {handleResendButtonClicked(); props.resendSignupEmail(props.email);}}>
+                         onClick={() => {handleResendButtonClicked(); props.resendForgotPassword(props.forgotPasswordEmail);}}>
                     <Mail className={classes.icon}/> Renvoyer un email
                 </Button>
                 <Button onClick={() => {props.removeAuthErrorMsg(); history.push('/')}} color="primary" variant="contained">
@@ -105,4 +110,4 @@ function SignupSuccess(props: ConnectedProps<typeof connectSignupSuccess>) {
     </Container>;
 }
 
-export default connectSignupSuccess(SignupSuccess);
+export default connectForgotPasswordSuccess(ForgotPasswordSuccess);

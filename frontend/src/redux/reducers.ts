@@ -12,10 +12,10 @@ const globalAppError = (globalAppError = '', action: AnyAction): string => {
 }
 
 const authErrorMsg = (authErrorMsg = '', action: AnyAction): string => {
-    if (action.type === ActionTypes.AUTH_ERROR || action.type === ActionTypes.SIGNUP_CONFIRM_EMAIL_ERROR )
+    if (action.type === ActionTypes.AUTH_ERROR || action.type === ActionTypes.SIGNUP_CONFIRM_EMAIL_ERROR || action.type === ActionTypes.RESET_PASSWORD_ERROR)
         return action.msg;
 
-    if (action.type === ActionTypes.LOGIN_SUCCESS || action.type === ActionTypes.SIGNUP_SUCCESS || action.type === ActionTypes.REMOVE_AUTH_ERROR_MSG)
+    if (action.type === ActionTypes.LOGIN_SUCCESS || action.type === ActionTypes.SIGNUP_SUCCESS || action.type === ActionTypes.SIGNUP_CONFIRM_EMAIL_SUCCESS ||action.type === ActionTypes.FORGOT_PASSWORD_SUCCESS || action.type === ActionTypes.RESET_PASSWORD_SUCCESS || action.type === ActionTypes.REMOVE_AUTH_ERROR_MSG)
         return '';
 
     return authErrorMsg;
@@ -23,7 +23,7 @@ const authErrorMsg = (authErrorMsg = '', action: AnyAction): string => {
 
 const defaultUserProfile = {email: '', firstName: '', middleName: '', lastName: ''};
 const userProfile = (userProfile: UserProfile = defaultUserProfile, action: AnyAction): UserProfile => {
-    if (action.type === ActionTypes.LOGIN_SUCCESS || action.type === ActionTypes.SIGNUP_SUCCESS || action.type === ActionTypes.SESSION_RETRIEVED || action.type === ActionTypes.SIGNUP_CONFIRM_EMAIL_SUCCESS)
+    if (action.type === ActionTypes.LOGIN_SUCCESS || action.type === ActionTypes.SIGNUP_SUCCESS || action.type === ActionTypes.SESSION_RETRIEVED || action.type === ActionTypes.SIGNUP_CONFIRM_EMAIL_SUCCESS || action.type === ActionTypes.RESET_PASSWORD_SUCCESS)
         return {
             email: action.user.email,
             firstName: action.user.firstName,
@@ -42,6 +42,23 @@ const confirmEmailStatus = (status: boolean | null = null, action: AnyAction): b
         return true;
     
     if (action.type === ActionTypes.SIGNUP_CONFIRM_EMAIL_ERROR)
+        return false;
+
+    return status;
+}
+
+const forgotPasswordEmail = (email: string = '', action: AnyAction): string => {
+    if (action.type === ActionTypes.FORGOT_PASSWORD_SUCCESS)
+        return action.email;
+
+    return email;
+}
+
+const resetPasswordStatus = (status: boolean | null = null, action: AnyAction): boolean | null => {
+    if (action.type === ActionTypes.RESET_PASSWORD_SUCCESS)
+        return true;
+    
+    if (action.type === ActionTypes.RESET_PASSWORD_ERROR)
         return false;
 
     return status;
@@ -85,6 +102,8 @@ export default combineReducers({
     authErrorMsg,
     userProfile,
     confirmEmailStatus,
+    forgotPasswordEmail,
+    resetPasswordStatus,
     carouselSlides,
     collections,
     products,

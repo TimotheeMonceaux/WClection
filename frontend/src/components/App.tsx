@@ -4,12 +4,14 @@ import { connect, ConnectedProps } from 'react-redux';
 import Container from '@material-ui/core/Container';
 import Modal from '@material-ui/core/Modal';
 import Paper from '@material-ui/core/Paper';
+import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
 import HeaderBar from './headerbar/Headerbar';
 import LoginPage from './auth/login/LoginPage';
 import SignupPage from './auth/signup/SignupPage';
+import ForgotPasswordPage from './auth/forgotpassword/ForgotPasswordPage';
 import { AppStore, AppDispatch } from '../redux/action-types';
 import Actions from '../redux/actions';
 import { isUserLoggedIn } from '../redux/selectors';
@@ -18,7 +20,10 @@ import Collections from './products/Collections';
 import Footer from './footer/Footer';
 import SignupConfirm from './auth/signup/SignupConfirm';
 import SignupSuccess from './auth/signup/SignupSuccess';
-import { Grid } from '@material-ui/core';
+import ForgotPasswordSuccess from './auth/forgotpassword/ForgotPasswordSuccess';
+import ResetPasswordPage from './auth/resetpassword/ResetPasswordPage';
+import ResetPasswordSuccess from './auth/resetpassword/ResetPasswordSuccess';
+
 
 const useStyles = makeStyles((theme) => ({
   body: {
@@ -77,21 +82,17 @@ function App(props: ConnectedProps<typeof connectApp>) {
       <HeaderBar />
       <div className={classes.body}>
         <Switch>
-          <Route path="/login">
-            <LoginPage />
-          </Route>
-          <Route path="/signup">
-            <SignupPage />
-          </Route>
+          <Route path="/login"><LoginPage /></Route>
+          <Route path="/signup"><SignupPage /></Route>
+          <Route path="/forgotPassword"><ForgotPasswordPage /></Route>
+          <Route path="/signupSuccess"><SignupSuccess /></Route>
+          <Route path="/confirmEmail"><SignupConfirm /></Route>
+          <Route path="/forgotPasswordSuccess"><ForgotPasswordSuccess /></Route>
+          <Route path="/resetPassword"><ResetPasswordPage /></Route>
+          <Route path="/resetPasswordSuccess"><ResetPasswordSuccess /></Route>
           <Route path="/checkout">
             {!props.isUserLoggedIn && <Redirect to="/login?callback=%2Fcheckout" />}
             <Typography variant="h3" style={{position: 'absolute', top: '25vh', left: '25vw'}}>Rends l'argent, Victor !</Typography>
-          </Route>
-          <Route path="/signupSuccess">
-            <SignupSuccess />
-          </Route>
-          <Route path="/confirmEmail">
-            <SignupConfirm />
           </Route>
           <Route path="/">
             <Container fixed>

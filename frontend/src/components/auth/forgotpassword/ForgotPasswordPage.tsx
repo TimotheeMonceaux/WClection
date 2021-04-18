@@ -5,7 +5,7 @@ import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import { makeStyles } from '@material-ui/core/styles';
 
-import SignupForm from "./SignupForm";
+import ForgotPasswordForm from "./ForgotPasswordForm";
 
 
 const useStyles = makeStyles(() => ({
@@ -20,21 +20,21 @@ const useStyles = makeStyles(() => ({
     }
   }));
 
-export default function SignupPage() {
+export default function ForgotPasswordPage() {
     const history = useHistory();
     const classes = useStyles();
 
     return <Container className={classes.root} fixed>
         <Paper square className={classes.paper}>
             <Tabs
-                value={1}
+                value={2}
                 indicatorColor="primary"
                 textColor="primary">
-                <Tab label="Connexion" onClick={() => history.push("/login")} />
-                <Tab label="Inscription" />
-                <Tab label="Mot de Passe oublié" onClick={() => history.push("/forgotPassword")}/>
+                <Tab label="Connexion"  onClick={() => history.push("/login")} />
+                <Tab label="Inscription" onClick={() => history.push("/signup")}/>
+                <Tab label="Mot de Passe oublié" />
             </Tabs>
-            <SignupForm />
+            <ForgotPasswordForm />
         </Paper>
     </Container>;
 }

@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Redirect, useHistory } from 'react-router';
+import { Redirect } from 'react-router';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
 import MuiAlert from '@material-ui/lab/Alert';
 
 import Actions from '../../../redux/actions';
 import { AppDispatch, AppStore } from '../../../redux/action-types';
 import { isUserLoggedIn } from '../../../redux/selectors';
+
+const urlParams = new URLSearchParams(window.location.search);
 
 const useStyles = makeStyles(() => ({
     textField: {
@@ -32,40 +33,26 @@ function mapStoreToProps(store: AppStore) {
 
 function mapDispatchToProps(dispatch: AppDispatch) {
     return {
-        login: (email: string, password: string) => {dispatch(Actions.userLogin(email, password))},
+        resetPassword: (email: string, password: string, key: string) => {dispatch(Actions.resetPassword(email, password, key))},
         removeAuthErrorMsg: () => {dispatch(Actions.removeAuthErrorMsg())}
     }
 }
 
-const connectLoginForm = connect(mapStoreToProps, mapDispatchToProps);
+const connectResetPasswordForm = connect(mapStoreToProps, mapDispatchToProps);
 
-function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
-    const history = useHistory();
-    const [emailValue, setEmailValue] = useState("");
-    const [emailError, setEmailError] = useState(false);
+function ResetPasswordForm(props: ConnectedProps<typeof connectResetPasswordForm>) {
+    const email = urlParams.get('email') ?? '';
+    const key = urlParams.get('key') ?? '';
+    const classes = useStyles();
     const [passwordValue, setPasswordValue] = useState("");
     const [passwordError, setPasswordError] = useState(false);
-    const classes = useStyles();
+    const [repeatPasswordValue, setRepeatPasswordValue] = useState("");
+    const [repeatPasswordError, setRepeatPasswordError] = useState(false);
 
-    if (props.isUserLoggedIn) {
-        const sp = new URLSearchParams(window.location.search);
-        if (sp.has('callback')) return <Redirect to={sp.get('callback') ?? '/'} />
-        return <Redirect to="/" />
-    }
-
-
-    function isEmail(s:string): boolean {
-        const s2 = s.split("@")[1];
-        return s2 !== undefined && s2.indexOf(".") > 0;
-    }
+    if (props.isUserLoggedIn) return <Redirect to="/resetPasswordSuccess" />;
 
     function isFormComplete(): boolean {
-        return emailValue !== "" && passwordValue !== "" && !emailError && !passwordError;
-    }
-
-    function handleEmailChange(s: string): void {
-        setEmailValue(s);
-        setEmailError(!isEmail(s));
+        return passwordValue !== "" && repeatPasswordValue !== ""  && !passwordError && !repeatPasswordError;
     }
 
     function handlePasswordChange(s: string): void {
@@ -73,30 +60,41 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
         setPasswordError(s.length < 8);
     }
 
+    function handleRepeatPasswordChange(s: string, passwordValue: string): void {
+        setRepeatPasswordValue(s);
+        setRepeatPasswordError(s !== passwordValue);
+    }
+
     return <form>
     <TextField 
         label="Email" 
         variant="outlined" 
-        className={`form-input ${classes.textField}`} 
-        error={emailError}
+        className={`form-input ${classes.textField}`}
+        disabled
         margin="normal"
-        autoFocus={true}
-        onBlur={(e) => handleEmailChange(e.target.value)}
-        />
-    {emailError && <Typography variant="body1" style={{color: "red"}}>Veuillez saisir une adresse email valide</Typography>}
+        value={email} />
     <br />
     <TextField 
         label="Mot de passe"
         variant="outlined"
-        className={`form-input ${classes.textField}`} 
+        className={`form-input ${classes.textField}`}
+        autoFocus
+        margin="normal"
         type="password"
         error={passwordError}
-        margin="normal"
-        onChange={(e) => handlePasswordChange(e.target.value)} 
-        onKeyDown={(e) => {if (e.key === "Enter" && isFormComplete()) props.login(emailValue, passwordValue)}}/>
+        onChange={(e) => handlePasswordChange(e.target.value)} />
     {passwordError && <Typography variant="body1" style={{color: "red"}}>Votre mot de passe doit faire au moins 8 caractères</Typography>}
     <br />
-    <Link href="/forgotPassword" variant="body1" color="primary" onMouseDown={() => history.push('/forgotPassword')}>Mot de Passe oublié ?</Link>
+    <TextField 
+        label="Confirmer le mot de passe"
+        variant="outlined"
+        className={`form-input ${classes.textField}`} 
+        margin="normal"
+        type="password"
+        error={repeatPasswordError}
+        onChange={(e) => handleRepeatPasswordChange(e.target.value, passwordValue)} 
+        onKeyDown={(e) => {if (e.key === "Enter" && isFormComplete()) props.resetPassword(email, passwordValue, key)}}/>
+    {repeatPasswordError && <Typography variant="body1" style={{color: "red"}}>Les mots de passe ne correspondent pas</Typography>}
     <br />
     <Button 
         variant="contained" 
@@ -104,7 +102,7 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
         className="form-input"
         style={{marginTop: 25}}
         disabled={!isFormComplete()}
-        onClick={() => props.login(emailValue, passwordValue)}>Connexion</Button>
+        onClick={() => props.resetPassword(email, passwordValue, key)}>Réinitialiser le mot de passe</Button>
 
     {props.authErrorMsg && 
         <MuiAlert 
@@ -117,4 +115,4 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
   </form>;
 }
 
-export default connectLoginForm(LoginForm);
+export default connectResetPasswordForm(ResetPasswordForm);

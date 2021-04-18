@@ -1,11 +1,10 @@
-import { useHistory } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import Tab from '@material-ui/core/Tab';
 import Tabs from '@material-ui/core/Tabs';
 import { makeStyles } from '@material-ui/core/styles';
 
-import SignupForm from "./SignupForm";
+import ResetPasswordForm from "./ResetPasswordForm";
 
 
 const useStyles = makeStyles(() => ({
@@ -20,21 +19,18 @@ const useStyles = makeStyles(() => ({
     }
   }));
 
-export default function SignupPage() {
-    const history = useHistory();
+export default function ResetPasswordPage() {
     const classes = useStyles();
 
     return <Container className={classes.root} fixed>
         <Paper square className={classes.paper}>
             <Tabs
-                value={1}
+                value={0}
                 indicatorColor="primary"
                 textColor="primary">
-                <Tab label="Connexion" onClick={() => history.push("/login")} />
-                <Tab label="Inscription" />
-                <Tab label="Mot de Passe oublié" onClick={() => history.push("/forgotPassword")}/>
+                <Tab label="Réinitialiser votre Mot de Passe" />
             </Tabs>
-            <SignupForm />
+            <ResetPasswordForm />
         </Paper>
     </Container>;
 }

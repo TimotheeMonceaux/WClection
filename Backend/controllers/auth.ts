@@ -6,8 +6,10 @@ import User from '../models/auth/user';
 import { hashPassword } from '../utils/db';
 import { sendMail } from '../mail';
 import EmailConfirmationCache from '../models/auth/emailConfirmationCache';
+import ForgotPasswordCache from '../models/auth/forgotPasswordCache';
 import { nowPlusMinutes } from '../utils/date';
 import getConfirmEmailTemplate from '../mail/templates/confirmEmail';
+import getForgotPasswordTemplate from '../mail/templates/forgotPassword';
 
 function updateSession(session: Express.session.Session, user: User) {
     if (session.user === undefined) session.user = new User(user.email, '');
@@ -94,11 +96,64 @@ export async function confirmEmail(email: string, validUntil: string, session: E
     const success = await update('auth."Users"' , [['"Email"', email]], [['"Confirmed"', '1']]);
     if (!success) {
         log("CONFIRM_EMAIL", email, "Error", {msg: "Update fail"});
-        return {success: false};
+        throw Error('Update fail');
     }
 
     const user = new User(email, '', true);
     updateSession(session, user);
     log("CONFIRM_EMAIL", email, "Success", {validUntil});
     return {success: true, user}
+}
+
+export async function setupForgotPassword(email: string) {
+    const id = uuidv4();
+    const p1 = insert(new ForgotPasswordCache(email, id, nowPlusMinutes(15).toISOString()));
+    const p2 = sendMail(getForgotPasswordTemplate(email, id));
+    await Promise.all([p1, p2]);
+}
+
+export async function forgotPassword(email: string): Promise<boolean> {
+    await setupForgotPassword(email);
+    log('FORGOT_PASSWORD', email, 'Success');
+    return true;
+}
+
+export async function retrieveForgotPasswordCache(email: string, key: string): Promise<ForgotPasswordCache | undefined> {
+    const row = await querySingle('SELECT * FROM auth."ForgotPasswordCache" WHERE "Email"=$1 AND "Key"=$2', [email.toLowerCase(), key]);
+    if (row === undefined) {
+        log("RETRIEVE_FORGOT_PASSWORD", email, "Error");
+        return undefined;
+    }
+    
+    log("RETRIEVE_FORGOT_PASSWORD", email, "Success");
+    return new ForgotPasswordCache(row.Email, row.Key, row.ValidUntil, row.CreateDate);
+}
+
+export async function retrieveLastForgotPasswordCache(email: string): Promise<ForgotPasswordCache | undefined> {
+    const row = await querySingle('SELECT * FROM auth."ForgotPasswordCache" WHERE "Email"=$1 ORDER BY "CreateDate" DESC LIMIT 1', [email.toLowerCase()]);
+    if (row === undefined) {
+        log("RETRIEVE_LAST_FORGOT_PASSWORD", email, "Error");
+        return undefined;
+    }
+    
+    log("RETRIEVE_LAST_FORGOT_PASSWORD", email, "Success");
+    return new ForgotPasswordCache(row.Email, row.Key, row.ValidUntil, row.CreateDate);
+}
+
+export async function resetPassword(email: string, password: string, validUntil: string, session: Express.session.Session): Promise<{success: boolean, user?: User}> {
+    if (Date.now() > new Date(validUntil).getTime()) {
+        log("RESET_PASSWORD", email, "Error", {validUntil});
+        return {success:  false};
+    }
+
+    const success = await update('auth."Users"' , [['"Email"', email]], [['"PasswordHash"', await hashPassword(password)], ['"Confirmed"', '1']]);
+    if (!success) {
+        log("RESET_PASSWORD", email, "Error", {msg: "Update fail"});
+        throw Error('Update fail');
+    }
+
+    const user = new User(email, '', true);
+    updateSession(session, user);
+    log("RESET_PASSWORD", email, "Success", {validUntil});
+    return {success: true, user};
 }

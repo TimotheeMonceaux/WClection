@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { Redirect, useHistory } from 'react-router';
+import { Redirect } from 'react-router';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import Link from '@material-ui/core/Link';
 import { makeStyles } from '@material-ui/core/styles';
+import Mail from '@material-ui/icons/Mail';
 import MuiAlert from '@material-ui/lab/Alert';
 
 import Actions from '../../../redux/actions';
@@ -26,33 +26,27 @@ const useStyles = makeStyles(() => ({
 function mapStoreToProps(store: AppStore) {
     return {
         authErrorMsg: store.authErrorMsg,
-        isUserLoggedIn: isUserLoggedIn(store)
+        isUserLoggedIn: isUserLoggedIn(store),
+        forgotPasswordEmail: store.forgotPasswordEmail
     }
 }
 
 function mapDispatchToProps(dispatch: AppDispatch) {
     return {
-        login: (email: string, password: string) => {dispatch(Actions.userLogin(email, password))},
+        forgotPassword: (email: string) => {dispatch(Actions.forgotPassword(email))},
         removeAuthErrorMsg: () => {dispatch(Actions.removeAuthErrorMsg())}
     }
 }
 
-const connectLoginForm = connect(mapStoreToProps, mapDispatchToProps);
+const connectForgotPasswordForm = connect(mapStoreToProps, mapDispatchToProps);
 
-function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
-    const history = useHistory();
+function ForgotPasswordForm(props: ConnectedProps<typeof connectForgotPasswordForm>) {
     const [emailValue, setEmailValue] = useState("");
     const [emailError, setEmailError] = useState(false);
-    const [passwordValue, setPasswordValue] = useState("");
-    const [passwordError, setPasswordError] = useState(false);
     const classes = useStyles();
-
-    if (props.isUserLoggedIn) {
-        const sp = new URLSearchParams(window.location.search);
-        if (sp.has('callback')) return <Redirect to={sp.get('callback') ?? '/'} />
-        return <Redirect to="/" />
-    }
-
+    
+    if (props.isUserLoggedIn) return <Redirect to="/" />;
+    if (props.forgotPasswordEmail !== '') return <Redirect to="/forgotPasswordSuccess" />;
 
     function isEmail(s:string): boolean {
         const s2 = s.split("@")[1];
@@ -60,7 +54,7 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
     }
 
     function isFormComplete(): boolean {
-        return emailValue !== "" && passwordValue !== "" && !emailError && !passwordError;
+        return emailValue !== "" && !emailError;
     }
 
     function handleEmailChange(s: string): void {
@@ -68,12 +62,9 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
         setEmailError(!isEmail(s));
     }
 
-    function handlePasswordChange(s: string): void {
-        setPasswordValue(s);
-        setPasswordError(s.length < 8);
-    }
-
     return <form>
+    <br />
+    <Typography variant="body1">Saisissez l'adresse e-mail associée à votre compte et nous vous enverrons un lien pour réinitialiser votre mot de passe.</Typography>
     <TextField 
         label="Email" 
         variant="outlined" 
@@ -81,22 +72,10 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
         error={emailError}
         margin="normal"
         autoFocus={true}
-        onBlur={(e) => handleEmailChange(e.target.value)}
+        onChange={(e) => handleEmailChange(e.target.value)}
+        onKeyDown={(e) => {if (e.key === "Enter" && isFormComplete()) props.forgotPassword(emailValue)}}
         />
     {emailError && <Typography variant="body1" style={{color: "red"}}>Veuillez saisir une adresse email valide</Typography>}
-    <br />
-    <TextField 
-        label="Mot de passe"
-        variant="outlined"
-        className={`form-input ${classes.textField}`} 
-        type="password"
-        error={passwordError}
-        margin="normal"
-        onChange={(e) => handlePasswordChange(e.target.value)} 
-        onKeyDown={(e) => {if (e.key === "Enter" && isFormComplete()) props.login(emailValue, passwordValue)}}/>
-    {passwordError && <Typography variant="body1" style={{color: "red"}}>Votre mot de passe doit faire au moins 8 caractères</Typography>}
-    <br />
-    <Link href="/forgotPassword" variant="body1" color="primary" onMouseDown={() => history.push('/forgotPassword')}>Mot de Passe oublié ?</Link>
     <br />
     <Button 
         variant="contained" 
@@ -104,7 +83,7 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
         className="form-input"
         style={{marginTop: 25}}
         disabled={!isFormComplete()}
-        onClick={() => props.login(emailValue, passwordValue)}>Connexion</Button>
+        onClick={() => props.forgotPassword(emailValue)}><Mail style={{marginRight: '0.5rem'}} /> Continuer</Button>
 
     {props.authErrorMsg && 
         <MuiAlert 
@@ -117,4 +96,4 @@ function LoginForm(props: ConnectedProps<typeof connectLoginForm>) {
   </form>;
 }
 
-export default connectLoginForm(LoginForm);
+export default connectForgotPasswordForm(ForgotPasswordForm);
