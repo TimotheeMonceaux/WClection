@@ -47,7 +47,7 @@ const userSignup = (email: string, password: string, newsletter: boolean): AppAc
                         if (json.success) dispatch({type: ActionTypes.SIGNUP_SUCCESS, ...json});
                         else dispatch({type: ActionTypes.AUTH_ERROR, msg: json.msg});
                     })
-                    .catch(error => dispatch({type: ActionTypes.SIGNUP_CONFIRM_EMAIL_ERROR, error: JSON.stringify(error)})));
+                    .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: JSON.stringify(error)})));
 
 const resendSignupEmail = (email: string): AppAction =>
     ((dispatch) => post('/api/auth/resendEmail', {email})
