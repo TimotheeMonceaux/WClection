@@ -12,17 +12,19 @@ import User from './models/auth/user';
 const app = express();
 const PORT = 8000;
 
+declare var process : {
+  env: {
+    WCLECTIONENV: 'PROD' | 'LOCAL',
+    SESSIONSECRET: string
+  }
+}
+
 app.use(cors({
-  origin: 'http://wclection.com',
+  origin: process.env.WCLECTIONENV === 'PROD' ? 'http://wclection.com' : 'http://localhost:3000',
   credentials: true,
   optionsSuccessStatus: 200 
 }));
 
-declare var process : {
-  env: {
-    SESSIONSECRET: string
-  }
-}
 app.use(cookieParser(process.env.SESSIONSECRET));
 declare global {
   namespace Express.session {
