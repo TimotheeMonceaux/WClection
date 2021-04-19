@@ -40,13 +40,36 @@ export async function insert(obj: IDbObject): Promise<boolean> {
 }
 
 export async function update(table: string, keys: Array<[string, string]>, values: Array<[string, string]>): Promise<boolean> {
+    let i = 1;
     const start = Date.now();
     const result = await pool.query(`UPDATE ${table} 
-                                    SET ${values.map((t, i) => `${t[0]} = \$${i + 1}`).join(', ')}
-                                    WHERE ${keys.map((t, i) => `${t[0]} = \$${values.length + i + 1}`).join(' AND ')}`, 
+                                    SET ${values.map((t) => `${t[0]} = \$${i++}`).join(', ')}
+                                    WHERE ${keys.map((t) => `${t[0]} = \$${i++}`).join(' AND ')}`, 
                                     values.concat(keys).map(t => t[1]));
     const duration = Date.now() - start;
     console.log('[INFO] Query: ', {text: `UPDATE ${table}`, duration, rows: result.rowCount});
+    return result.rowCount === 1;
+}
+
+export async function upsert(obj: IDbObject, keys: Array<string>, values: Array<[string, string]>): Promise<boolean> {
+    const params = obj.getInsertParameters();
+    const start = Date.now();
+    const result = await pool.query(`INSERT INTO ${obj.TABLE_NAME} (${params.map(t => t[0]).join(', ')}) 
+                                     VALUES (${params.map((t, i) => `\$${i + 1}`).join(', ')})
+                                     ON CONFLICT (${keys.join(', ')})
+                                     DO UPDATE SET ${values.map((t) => `${t[0]} = ${t[1]}`).join(', ')}`, 
+                                     params.map(t => t[1]));
+    const duration = Date.now() - start;
+    console.log('[INFO] Query: ', {text: `UPSERT INTO ${obj.TABLE_NAME}`, duration, rows: result.rowCount});
+    return result.rowCount === 1;
+}
+
+export async function delete_(table: string, keys: Array<[string, string]>): Promise<boolean> {
+    const start = Date.now();
+    const result = await pool.query(`DELETE FROM ${table} WHERE ${keys.map((t, i) => `${t[0]} = \$${i +1}`).join(' AND ')}`, 
+                                     keys.map(t => t[1]));
+    const duration = Date.now() - start;
+    console.log('[INFO] Query: ', {text: `DELETE FROM ${table}`, duration, rows: result.rowCount});
     return result.rowCount === 1;
 }
 

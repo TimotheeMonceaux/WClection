@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth';
 import carouselRouter from './routes/carousel';
 import collectionRouter from './routes/collection';
+import cartRouter from './routes/cart';
 import User from './models/auth/user';
 
 const app = express();
@@ -30,15 +31,15 @@ declare global {
   namespace Express.session {
     class Session {
       user?: User;
+      cart?: {[productId: number]: number};
       updateDate?: Date;
-      
     }
     interface SessionData {}
   }
 }
 app.use(session({
   secret: process.env.SESSIONSECRET,
-  resave: true,
+  resave: false,
   saveUninitialized: false,
   name: 'wclectionSession',
   cookie: {
@@ -55,6 +56,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/api/auth', authRouter);
 app.use('/api/carousel', carouselRouter);
 app.use('/api/collection', collectionRouter);
+app.use('/api/cart', cartRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
