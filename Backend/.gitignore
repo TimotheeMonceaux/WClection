@@ -1,5 +1,0 @@
-node_modules/
-build/
-dbconfig.cmd
-dbconfig.local.cmd
-db/sql/insert.sql
