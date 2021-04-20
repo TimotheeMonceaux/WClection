@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { connect, ConnectedProps } from 'react-redux';
 import Container from '@material-ui/core/Container';
 import CancelOutlined from '@material-ui/icons/CancelOutlined';
@@ -23,6 +23,9 @@ import SignupSuccess from './auth/signup/SignupSuccess';
 import ForgotPasswordSuccess from './auth/forgotpassword/ForgotPasswordSuccess';
 import ResetPasswordPage from './auth/resetpassword/ResetPasswordPage';
 import ResetPasswordSuccess from './auth/resetpassword/ResetPasswordSuccess';
+import Checkout from './checkout/Checkout';
+import CheckoutSuccess from './checkout/CheckoutSuccess';
+import CheckoutCancel from './checkout/CheckoutCancel';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -98,10 +101,9 @@ function App(props: ConnectedProps<typeof connectApp>) {
           <Route path="/forgotPasswordSuccess"><ForgotPasswordSuccess /></Route>
           <Route path="/resetPassword"><ResetPasswordPage /></Route>
           <Route path="/resetPasswordSuccess"><ResetPasswordSuccess /></Route>
-          <Route path="/checkout">
-            {!props.isUserLoggedIn && <Redirect to="/login?callback=%2Fcheckout" />}
-            <Typography variant="h3" style={{position: 'absolute', top: '25vh', left: '25vw'}}>Rends l'argent, Victor !</Typography>
-          </Route>
+          <Route path="/checkout"><Checkout /></Route>
+          <Route path="/checkoutSuccess"><CheckoutSuccess /></Route>
+          <Route path="/checkoutCancel"><CheckoutCancel /></Route>
           <Route path="/">
             <Container fixed>
               <AppCarousel />
