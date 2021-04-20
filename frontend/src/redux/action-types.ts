@@ -23,8 +23,7 @@ const ActionTypes =  {
     SET_COLLECTIONS: "SET_COLLECTIONS",
 
     // Cart
-    ADD_TO_CART: "ADD_TO_CART",
-    REMOVE_FROM_CART: "REMOVE_FROM_CART"
+    SET_CART: "SET_CART"
 };
 
 export type ActionType = typeof ActionTypes;

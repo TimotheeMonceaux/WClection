@@ -8,7 +8,7 @@ const cartRouter = express.Router();
 cartRouter.post('/synchronize',
     async (req, res) => {
         if (req.session.user?.email === undefined) 
-            return res.status(401).json({success: false, msg: "Vous devez être connecté pour effectuer cette action"});
+            return res.status(200).json({success: true, cart: req.session.cart});
 
         try {
             if (req.session.cart === undefined || req.session.cart === {}) {

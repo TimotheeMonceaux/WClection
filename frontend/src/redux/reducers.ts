@@ -1,5 +1,4 @@
 import { combineReducers, AnyAction } from 'redux';
-import _ from 'lodash';
 
 import ActionTypes from './action-types';
 import { UserProfile, CarouselSlide, Product, Collection } from './store-types';
@@ -87,12 +86,8 @@ const collections = (collections: Array<Collection> = [], action: AnyAction): Ar
 }
 
 const cart = (cart: {[productId: number]: number} = [], action: AnyAction): {[productId: number]: number} => {
-    if (action.type === ActionTypes.ADD_TO_CART) 
-        return {...cart, [action.productId]: (cart[action.productId] ?? 0) + action.quantity};
-    
-
-    if (action.type === ActionTypes.REMOVE_FROM_CART)
-        return _.omit(cart, action.productId);
+    if (action.type === ActionTypes.SET_CART) 
+        return action.cart;
 
     return cart;
 }

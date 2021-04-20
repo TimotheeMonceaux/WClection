@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
 import { connect, ConnectedProps } from 'react-redux';
 import Container from '@material-ui/core/Container';
-import Modal from '@material-ui/core/Modal';
+import CancelOutlined from '@material-ui/icons/CancelOutlined';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -38,14 +38,24 @@ const useStyles = makeStyles((theme) => ({
   },
   errorModal: {
     position: 'absolute',
-    top: '20vh',
-    left: '10vw',
-    width: '80vw',
-    maxHeight: '60vh',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '60vw',
+    height: '60vh',
+    zIndex: 10,
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
+    padding: theme.spacing(10),
     color: theme.palette.error.main
+  },
+  errorIcon: {
+    position: 'relative',
+    top: 5,
+    marginRight: theme.spacing(2)
+  },
+  errorLine: {
+    marginTop: theme.spacing(3)
   }
 }));
 
@@ -68,17 +78,15 @@ const connectApp = connect(mapStoreToProps, mapDispatchToProps);
 function App(props: ConnectedProps<typeof connectApp>) {
   const getSession = props.getSession;
   useEffect(() => {getSession()}, [getSession]);
-  const [openModal, setOpenModal] = useState(props.globalAppError !== '');
   const classes = useStyles();
 
   return (
     <Router>
-      <Modal open={openModal} onClose={() => setOpenModal(false)}>
-        <Paper className={classes.errorModal}>
-          <Typography variant="h2">{props.globalAppError}</Typography>
-          <Typography variant="h4">Press F5 to retry.</Typography>
-        </Paper>
-      </Modal>
+        {props.globalAppError !== '' && <Paper className={classes.errorModal}>
+          <Typography variant="h3" className={classes.errorLine}><CancelOutlined fontSize="inherit" className={classes.errorIcon}/>Error</Typography>
+          <Typography variant="h4" className={classes.errorLine}>{props.globalAppError}</Typography>
+          <Typography variant="h5" className={classes.errorLine}>Press F5 to retry.</Typography>
+        </Paper>}
       <HeaderBar />
       <div className={classes.body}>
         <Switch>
