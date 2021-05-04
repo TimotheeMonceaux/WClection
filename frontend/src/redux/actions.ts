@@ -1,7 +1,7 @@
 import { AnyAction } from 'redux';
 import ActionTypes, { AppAction } from './action-types';
 
-const serverUrl = window.location.hostname === "localhost" ? "http://localhost:8000" : "http://wclection.com";
+const serverUrl = window.location.hostname === "localhost" ? "http://localhost:8000" : "https://wclection.com";
 
 function get(endpoint: string): Promise<Response> {
     return fetch(serverUrl + endpoint, {
