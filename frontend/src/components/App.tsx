@@ -23,7 +23,6 @@ import SignupSuccess from './auth/signup/SignupSuccess';
 import ForgotPasswordSuccess from './auth/forgotpassword/ForgotPasswordSuccess';
 import ResetPasswordPage from './auth/resetpassword/ResetPasswordPage';
 import ResetPasswordSuccess from './auth/resetpassword/ResetPasswordSuccess';
-import Checkout from './checkout/Checkout';
 import CheckoutSuccess from './checkout/CheckoutSuccess';
 import CheckoutCancel from './checkout/CheckoutCancel';
 import ReviewOrder from './checkout/ReviewOrder';
@@ -103,7 +102,6 @@ function App(props: ConnectedProps<typeof connectApp>) {
           <Route path="/resetPassword"><ResetPasswordPage /></Route>
           <Route path="/resetPasswordSuccess"><ResetPasswordSuccess /></Route>
           <Route path="/reviewOrder"><ReviewOrder /></Route>
-          <Route path="/checkout"><Checkout /></Route>
           <Route path="/checkoutSuccess"><CheckoutSuccess /></Route>
           <Route path="/checkoutCancel"><CheckoutCancel /></Route>
           <Route path="/">

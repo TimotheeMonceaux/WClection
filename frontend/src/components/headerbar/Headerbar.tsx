@@ -97,7 +97,7 @@ function HeaderBar(props: ConnectedProps<typeof connectHeaderBar>) {
                   <MenuItem><i>Votre panier est vide</i></MenuItem> : 
                   <div>
                     {props.cartItems.map(productId => <CartMenuItem productId={productId} quantity={props.cart[productId]} key={productId} />)}
-                    <MenuItem>Total: {props.cartValue.toLocaleString("fr")}€ <Button variant="contained" color="primary" style={{marginLeft: 10}} onClick={() => history.push('/checkout')}>Acheter Maintenant</Button></MenuItem>
+                    <MenuItem>Total: {props.cartValue.toLocaleString("fr")}€ <Button variant="contained" color="primary" style={{marginLeft: 10}} onClick={() => history.push('/reviewOrder')}>Acheter Maintenant</Button></MenuItem>
                   </div>}
               </div>
           </Menu>

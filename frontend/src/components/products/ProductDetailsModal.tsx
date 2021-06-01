@@ -172,7 +172,7 @@ function ProductDetailsModal(props: ConnectedProps<typeof connectProductDetailsM
                 <Grid item xs={6}><Typography variant="body1" className={classes.quantity}>Quantité :</Typography></Grid>
                 <Grid item xs={6} style={{paddingTop: 25}}><TextField type="number" value={quantity} onChange={(e) => setQuantity(parseInt(e.target.value))}/></Grid>
             </Grid>
-            <Button size="small" color="primary" variant="contained" onClick={() => {props.addToCart(props.productId, quantity); history.push('/checkout')}}>
+            <Button size="small" color="primary" variant="contained" onClick={() => {props.addToCart(props.productId, quantity); history.push('/reviewOrder')}}>
                 Acheter Maintenant
             </Button>
             <Button size="small" color="primary" onClick={() => props.addToCart(props.productId, quantity)}>
