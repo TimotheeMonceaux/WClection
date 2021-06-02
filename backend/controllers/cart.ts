@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { query, upsert, log, delete_ } from "../db";
+import { query, update, upsert, log, delete_ } from "../db";
 import CartItem from "../models/shop/cartItem";
 
 export async function getCartFromDb(email: string): Promise<Array<CartItem>> {
@@ -22,6 +22,18 @@ export async function addItemToDb(productId: number, quantity: number, email: st
     return res;
 }
 
+export async function setItemToDb(productId: number, quantity: number, email: string): Promise<boolean> {
+    const res = await update('shop."CartItems"', [['"UserEmail"', email], ['"ProductId"', productId.toString()]], [['"Quantity"', quantity.toString()]]);
+    log('SET_CART', email, 'Success', {productId, quantity});
+    return res;
+}
+
+export async function deleteItemFromDb(productId: number, email: string): Promise<boolean> {
+    const res = await delete_('shop."CartItems"', [['"UserEmail"', email], ['"ProductId"', productId.toString()]]);
+    log('DELETE_CART', email, 'Success', {productId});
+    return res;
+}
+
 export function addItemToSession(productId: number, quantity: number, session: Express.session.Session) {
     if (session.cart === undefined)
         session.cart = {};
@@ -29,10 +41,11 @@ export function addItemToSession(productId: number, quantity: number, session: E
     session.cart = {...session.cart, [productId]: (session.cart[productId] ?? 0) + quantity};
 }
 
-export async function deleteItemFromDb(productId: number, email: string): Promise<boolean> {
-    const res = await delete_('shop."CartItems"', [['"UserEmail"', email], ['"ProductId"', productId.toString()]]);
-    log('DELETE_CART', email, 'Success', {productId});
-    return res;
+export function setItemToSession(productId: number, quantity: number, session: Express.session.Session) {
+    if (session.cart === undefined)
+        session.cart = {};
+    
+    session.cart = {...session.cart, [productId]: quantity};
 }
 
 export function deleteItemFromSession(productId: number, session: Express.session.Session) {
