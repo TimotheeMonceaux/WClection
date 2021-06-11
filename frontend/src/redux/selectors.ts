@@ -27,6 +27,20 @@ export const getCartSize = createSelector(getCart, cart => Object.values(cart).r
 
 export const getCartItems = createSelector(getCart, cart => Object.keys(cart).map(id => parseInt(id)));
 
-export const getCartValue = createSelector(getCart, getProducts, (cart, products) => Object.keys(cart).map(key => parseInt(key))
-                                                                                                      .map(id => cart[id] * products[id].price)
-                                                                                                      .reduce((a, b) => a + b, 0));
+const floor2Dec = (a: number) => Math.floor(a * 100) / 100;
+
+export const getCartValue = createSelector(getCart, getProducts, (cart, products) => {
+        if (_.isEmpty(cart)) return 0;
+        let sortedCart = Object.keys(cart).map(key => parseInt(key))
+                                          .sort((a, b) => -1 * (products[a].price - products[b].price));
+
+        let halfOfFirstItemPrice = floor2Dec(products[sortedCart[0]].price / 2);
+
+        return sortedCart.map(id => cart[id] * products[id].price)
+                         .reduce((a, b) => floor2Dec(a + b / 2), halfOfFirstItemPrice)
+    });
+
+export const getVoucherValue = createSelector(getCart, getProducts, getCartValue, 
+    (cart, products, cartValue) => floor2Dec(Object.keys(cart).map(key => parseInt(key))
+                                                     .map(id => cart[id] * products[id].price)
+                                                     .reduce((a, b) => a + b, 0) - cartValue));

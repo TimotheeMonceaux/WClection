@@ -23,6 +23,19 @@ function post(endpoint: string, body: object): Promise<Response> {
         });
 }
 
+function put(endpoint: string, body: object): Promise<Response> {
+    return fetch(serverUrl + endpoint, 
+        {
+            method: 'PUT', 
+            credentials: 'include',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }, 
+            body: JSON.stringify(body)
+        });
+}
+
 function delete_(endpoint: string, body: object): Promise<Response> {
     return fetch(serverUrl + endpoint, 
         {
@@ -161,6 +174,15 @@ const addToCart = (productId: number, quantity: number): AppAction =>
                     })
                     .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: error.toString()})));
 
+const setToCart = (productId: number, quantity: number): AppAction => 
+    ((dispatch) => put("/api/cart/item", {productId, quantity})
+                    .then(response => response.json())
+                    .then(json => {
+                        if (json.success) dispatch({type: ActionTypes.SET_CART, ...json});
+                        else dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: json.msg});
+                    })
+                    .catch(error => dispatch({type: ActionTypes.SET_GLOBAL_APP_ERROR, error: error.toString()})));
+
 const removeFromCart = (productId: number): AppAction => 
     ((dispatch) => delete_("/api/cart/item", {productId})
                     .then(response => response.json())
@@ -186,6 +208,7 @@ const actions = {
     loadCollections,
     synchronizeCart,
     addToCart,
+    setToCart,
     removeFromCart
 };
 
